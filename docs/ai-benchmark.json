@@ -1,0 +1,501 @@
+{
+  "seeds": 30,
+  "paired_rounds": 60,
+  "rule_based_wins": 38,
+  "rule_based_win_rate": 0.6333333333333333,
+  "decision_ms": {
+    "basic": {
+      "median": 0.982,
+      "p95": 3.108,
+      "max": 15.724
+    },
+    "rule_based": {
+      "median": 2.179,
+      "p95": 9.425,
+      "max": 118.494
+    }
+  },
+  "note": "Incremental draws with immediate AI reactions (no wall-clock delays), swapped partnerships. Decision timings cover bury/play only. Not proof of general playing strength.",
+  "rounds": [
+    {
+      "seed": 0,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 25,
+      "dealer": 0,
+      "gain": 2
+    },
+    {
+      "seed": 0,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 115,
+      "dealer": 0,
+      "gain": 0
+    },
+    {
+      "seed": 1,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 65,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 1,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 60,
+      "dealer": 2,
+      "gain": 1
+    },
+    {
+      "seed": 2,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 70,
+      "dealer": 3,
+      "gain": 1
+    },
+    {
+      "seed": 2,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 20,
+      "dealer": 1,
+      "gain": 2
+    },
+    {
+      "seed": 3,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 95,
+      "dealer": 0,
+      "gain": 0
+    },
+    {
+      "seed": 3,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 80,
+      "dealer": 0,
+      "gain": 0
+    },
+    {
+      "seed": 4,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 75,
+      "dealer": 1,
+      "gain": 1
+    },
+    {
+      "seed": 4,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 80,
+      "dealer": 1,
+      "gain": 0
+    },
+    {
+      "seed": 5,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 100,
+      "dealer": 2,
+      "gain": 0
+    },
+    {
+      "seed": 5,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 115,
+      "dealer": 2,
+      "gain": 0
+    },
+    {
+      "seed": 6,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 140,
+      "dealer": 3,
+      "gain": 1
+    },
+    {
+      "seed": 6,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 45,
+      "dealer": 3,
+      "gain": 1
+    },
+    {
+      "seed": 7,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 50,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 7,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 120,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 8,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 80,
+      "dealer": 1,
+      "gain": 0
+    },
+    {
+      "seed": 8,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 60,
+      "dealer": 1,
+      "gain": 1
+    },
+    {
+      "seed": 9,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 45,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 9,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 70,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 10,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 60,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 10,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 55,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 11,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 125,
+      "dealer": 1,
+      "gain": 1
+    },
+    {
+      "seed": 11,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 70,
+      "dealer": 1,
+      "gain": 1
+    },
+    {
+      "seed": 12,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 90,
+      "dealer": 3,
+      "gain": 0
+    },
+    {
+      "seed": 12,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 60,
+      "dealer": 2,
+      "gain": 1
+    },
+    {
+      "seed": 13,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 0,
+      "dealer": 2,
+      "gain": 3
+    },
+    {
+      "seed": 13,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 125,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 14,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 85,
+      "dealer": 0,
+      "gain": 0
+    },
+    {
+      "seed": 14,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 115,
+      "dealer": 0,
+      "gain": 0
+    },
+    {
+      "seed": 15,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 90,
+      "dealer": 3,
+      "gain": 0
+    },
+    {
+      "seed": 15,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 70,
+      "dealer": 1,
+      "gain": 1
+    },
+    {
+      "seed": 16,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 65,
+      "dealer": 3,
+      "gain": 1
+    },
+    {
+      "seed": 16,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 50,
+      "dealer": 3,
+      "gain": 1
+    },
+    {
+      "seed": 17,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 50,
+      "dealer": 3,
+      "gain": 1
+    },
+    {
+      "seed": 17,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 90,
+      "dealer": 2,
+      "gain": 0
+    },
+    {
+      "seed": 18,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 35,
+      "dealer": 0,
+      "gain": 2
+    },
+    {
+      "seed": 18,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 75,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 19,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 50,
+      "dealer": 1,
+      "gain": 1
+    },
+    {
+      "seed": 19,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 135,
+      "dealer": 1,
+      "gain": 1
+    },
+    {
+      "seed": 20,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 65,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 20,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 70,
+      "dealer": 2,
+      "gain": 1
+    },
+    {
+      "seed": 21,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 80,
+      "dealer": 1,
+      "gain": 0
+    },
+    {
+      "seed": 21,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 125,
+      "dealer": 2,
+      "gain": 1
+    },
+    {
+      "seed": 22,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 35,
+      "dealer": 2,
+      "gain": 2
+    },
+    {
+      "seed": 22,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 130,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 23,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 45,
+      "dealer": 1,
+      "gain": 1
+    },
+    {
+      "seed": 23,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 130,
+      "dealer": 0,
+      "gain": 1
+    },
+    {
+      "seed": 24,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 80,
+      "dealer": 3,
+      "gain": 0
+    },
+    {
+      "seed": 24,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 85,
+      "dealer": 3,
+      "gain": 0
+    },
+    {
+      "seed": 25,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 75,
+      "dealer": 3,
+      "gain": 1
+    },
+    {
+      "seed": 25,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 50,
+      "dealer": 3,
+      "gain": 1
+    },
+    {
+      "seed": 26,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 155,
+      "dealer": 3,
+      "gain": 1
+    },
+    {
+      "seed": 26,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 100,
+      "dealer": 2,
+      "gain": 0
+    },
+    {
+      "seed": 27,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 115,
+      "dealer": 2,
+      "gain": 0
+    },
+    {
+      "seed": 27,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 85,
+      "dealer": 2,
+      "gain": 0
+    },
+    {
+      "seed": 28,
+      "advanced_team": 0,
+      "advanced_won": false,
+      "attacker_score": 90,
+      "dealer": 0,
+      "gain": 0
+    },
+    {
+      "seed": 28,
+      "advanced_team": 1,
+      "advanced_won": true,
+      "attacker_score": 105,
+      "dealer": 0,
+      "gain": 0
+    },
+    {
+      "seed": 29,
+      "advanced_team": 0,
+      "advanced_won": true,
+      "attacker_score": 165,
+      "dealer": 1,
+      "gain": 2
+    },
+    {
+      "seed": 29,
+      "advanced_team": 1,
+      "advanced_won": false,
+      "attacker_score": 120,
+      "dealer": 1,
+      "gain": 1
+    }
+  ]
+}
