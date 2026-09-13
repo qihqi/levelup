@@ -5,6 +5,7 @@ const symbols = {S: '♠', H: '♥', C: '♣', D: '♦'};
 const phases = {lobby: '等待入座', dealing: '摸牌 · 随时亮主', burying: '庄家扣底', playing: '出牌', round_end: '本局结束', match_end: '比赛结束'};
 let state = null, socket = null, selected = new Set(), roomCode = '', token = '', connecting = false;
 let manualClose = false, retryTimer = null, toastTimer = null, shownResult = '', pending = false, deadline = 0;
+let hintPendingVersion = null;
 let dealDeadline = 0, freshCards = new Set(), handFingerprint = '';
 let connectTimer = null, reconnectAttempts = 0, requestGeneration = 0;
 let forcedTimer = null, forcedTimerKey = '', forcedAttempt = '';
@@ -38,7 +39,7 @@ function returnToLobby(message = '', failedRoom = roomCode, invalidateToken = fa
   cancelForcedPlay(); forcedAttempt = '';
   previousSocket?.close();
   if (invalidateToken && failedRoom) safeStorage.remove(`levelup:${failedRoom}`);
-  state = null; roomCode = ''; token = ''; pending = false; reconnectAttempts = 0;
+  state = null; roomCode = ''; token = ''; pending = false; hintPendingVersion = null; reconnectAttempts = 0;
   selected.clear(); freshCards.clear(); handFingerprint = ''; shownResult = '';
   deadline = 0; dealDeadline = 0; busy(false);
   if ($('info-dialog').open) $('info-dialog').close();
@@ -114,6 +115,7 @@ function connect() {
     } else if (message.type === 'state') {
       clearTimeout(connectTimer); reconnectAttempts = 0; busy(false);
       pending = false;
+      if (hintPendingVersion !== message.version) hintPendingVersion = null;
       const previous = state;
       state = message; deadline = Date.now() + state.seconds_left * 1000;
       dealDeadline = Date.now() + (state.deal_seconds_left || 0) * 1000;
@@ -124,12 +126,22 @@ function connect() {
       if (handChanged || previous?.phase !== state.phase || JSON.stringify(previous?.bid) !== JSON.stringify(state.bid)) $('ai-hint').hidden = true;
       const owned = new Set(state.hand.map(c => c.id));
       selected = new Set([...selected].filter(id => owned.has(id)));
-      if (previous && (previous.phase !== state.phase || previous.round !== state.round || previous.deal_id !== state.deal_id || previous.turn !== state.turn || previous.trick_number !== state.trick_number)) selected.clear();
+      // During dealing, turn identifies the next recipient, not who may bid.
+      // Keep selections by physical card ID as new cards arrive and sort around them.
+      if (previous && (previous.phase !== state.phase || previous.round !== state.round ||
+          previous.deal_id !== state.deal_id || previous.seat !== state.seat ||
+          (state.phase !== 'dealing' && (previous.turn !== state.turn || previous.trick_number !== state.trick_number)))) selected.clear();
       render();
     } else if (message.type === 'error') {
       connectionError = message.message;
-      pending = false; toast(message.message); updateActions();
+      pending = false; hintPendingVersion = null; toast(message.message); updateActions();
+    } else if (message.type === 'hint_pending') {
+      pending = false; hintPendingVersion = message.version;
+      toast('AI 正在思考出牌，仍可手动选牌和出牌。'); updateActions();
     } else if (message.type === 'hint') {
+      const wasSearching = hintPendingVersion !== null;
+      hintPendingVersion = null;
+      if (wasSearching && pending) { updateActions(); return; }
       pending = false;
       if (message.version === state?.version || (state?.phase === 'dealing' && message.deal_id === state.deal_id)) {
         selected = new Set(message.ids); renderHand(); updateActions();
@@ -363,9 +375,11 @@ function renderTable() {
       if (play) cards.append(...play.cards.map(c => cardNode(c, true)));
       else cards.append(text('span', state.turn === seat ? '正在出牌…' : '等待出牌', 'muted'));
       box.append(cards, text('div', `${compass[seat]}${seat === state.dealer ? ' · 庄' : ''} · 余 ${state.counts[seat]} 张`, 'play-meta')); area.append(box);
+      appendReaction(box, play);
     }
     renderPreviousTrick(area);
     $('table-caption').textContent = state.trick.length ? `第 ${state.trick_number} 墩 · ${nameOf(state.trick[0].seat)} 首出${suitName(effectiveSuit(state.trick[0].cards[0]))}` : state.last_trick ? `第 ${state.trick_number} 墩 · 等待 ${nameOf(state.turn)} 领出` : '第 1 墩 · 庄家领出';
+    if (state.ai_thinking) $('table-caption').textContent += ' · AI 正在思考…';
   } else {
     waiting.append(text('span', `闲家 ${state.score} 分`, 'phase-badge'));
     waiting.append(text('h2', state.phase === 'match_end' ? '这场升级，有了赢家。' : '一局落定，再来一局。'));
@@ -398,10 +412,18 @@ function previousPlayNode(play, index, last, detail = false) {
   row.append(text('span', `${compass[play.seat]}${detail ? ` · ${roleOf(play.seat)}` : ''}${won ? ' ✓' : ''}`, 'previous-seat'));
   const cards = text('div', '', 'previous-cards');
   cards.append(...play.cards.map(c => cardNode(c, true)));
-  row.append(cards); return row;
+  row.append(cards); appendReaction(row, play); return row;
+}
+function appendReaction(parent, play) {
+  if (typeof play?.reaction !== 'string' || !play.reaction || [...play.reaction].length >= 10) return;
+  const bubble = text('span', play.reaction, 'play-reaction');
+  bubble.setAttribute('aria-label', `${nameOf(play.seat)}：${play.reaction}`);
+  parent.append(bubble);
 }
 function renderHand(force = true) {
-  const fingerprint = JSON.stringify([state.hand, state.phase, state.seat, state.dealer, state.turn, state.play_options, state.players[state.seat].auto]);
+  const fingerprint = JSON.stringify([state.hand, state.phase, state.seat, state.dealer,
+    state.phase === 'dealing' ? null : state.turn, state.level, state.trump,
+    state.play_options, state.players[state.seat].auto]);
   if (!force && fingerprint === handFingerprint) return;
   handFingerprint = fingerprint;
   $('hand-section').hidden = state.phase === 'lobby';
@@ -409,7 +431,21 @@ function renderHand(force = true) {
   $('hand-title').textContent = state.seat % 2 === state.dealer % 2 ? '我的手牌 · 守庄方' : '我的手牌 · 抓分方';
   if (state.phase === 'dealing') $('hand-title').textContent = state.deal_closing ? '我的手牌 · 最后亮主' : '我的手牌 · 摸牌中';
   const hand = $('hand');
-  hand.replaceChildren(...state.hand.map((c, i) => { const node = cardNode(c, false, true); node.style.zIndex = i; return node; }));
+  // Reconcile by physical card ID. Replacing the whole hand on every draw
+  // detaches selected/focused buttons and can interrupt a click in progress.
+  const existing = new Map([...hand.children].map(node => [node.dataset.cardId, node]));
+  const nodes = state.hand.map((card, i) => {
+    const id = String(card.id), view = JSON.stringify([card, effectiveSuit(card)]);
+    let node = existing.get(id);
+    if (!node || node.dataset.cardView !== view) node = cardNode(card, false, true);
+    node.dataset.cardId = id; node.dataset.cardView = view;
+    node.style.zIndex = i;
+    node.classList.toggle('just-dealt', freshCards.has(card.id));
+    return node;
+  });
+  const retained = new Set(nodes);
+  for (const node of [...hand.children]) if (!retained.has(node)) hand.removeChild(node);
+  for (const [i, node] of nodes.entries()) if (hand.children[i] !== node) hand.insertBefore(node, hand.children[i] || null);
   const own = state.players[state.seat];
   $('auto').textContent = own.auto ? '取消托管' : '开启托管'; $('auto').classList.toggle('enabled', own.auto);
 }
@@ -449,12 +485,13 @@ function updateActions() {
   $('pass-bid').textContent = passed ? '已确认' : bidPassLabel();
   $('pass-bid').disabled = !finalBid || !available || passed;
   $('clear').hidden = Boolean(finalBid);
-  $('hint').disabled = !mine || !available; $('clear').disabled = !selected.size;
+  $('hint').disabled = !mine || !available || hintPendingVersion === state.version; $('clear').disabled = !selected.size;
   $('auto').disabled = !active || !available;
   syncForcedPlay();
 }
 function fillStrategies(select, strategies, chosen) {
-  select.replaceChildren(...strategies.map(strategy => {
+  const visible = strategies.filter(strategy => !['basic', 'xgboost_play'].includes(strategy.id));
+  select.replaceChildren(...visible.map(strategy => {
     const option = text('option', strategy.name); option.value = strategy.id; return option;
   }));
   select.value = chosen;
@@ -475,6 +512,7 @@ function fillTimers(select) {
 }
 function renderHint(message) {
   const body = $('ai-hint-content'); body.replaceChildren();
+  if (message.agent?.status === 'fallback') body.append(text('p', 'OpenAI 暂不可用，本次提示由记牌策略提供。', 'muted'));
   const options = message.alternatives || [];
   for (const [index, candidate] of options.entries()) {
     const section = text('div', '', 'hint-option');

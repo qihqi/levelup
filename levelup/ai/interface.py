@@ -103,12 +103,20 @@ class AIStrategy(ABC):
     name: str
     description: str
 
+    def rank_external(self, context, candidates):
+        """Rank candidates when logging a command chosen by an external caller.
+
+        Remote policies override this to avoid billable inference just for logs.
+        """
+        return self.rank(context, candidates)
+
     @abstractmethod
     def rank(self, context: AIContext, candidates: tuple[Action, ...]) -> list[RankedAction]:
         """Score every supplied legal candidate, returning highest score first.
 
-        No mutation, external state, hidden hands, or fresh actions. Ties should
-        resolve deterministically. The caller uses the first-ranked candidate.
+        Never mutate the observation, read hidden hands, or invent fresh actions.
+        Local policies break ties deterministically; remote policies may be
+        stochastic. The caller uses the first-ranked candidate.
         """
 
 

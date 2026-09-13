@@ -11,10 +11,16 @@ function client(search = '', preferences = new Map()) {
     if (!elements.has(id)) {
       const classes = new Set();
       elements.set(id, {id, value: '', hidden: false, disabled: false, textContent: '', open: false,
-        style: {setProperty() {}}, children: [],
+        style: {setProperty() {}}, dataset: {}, children: [],
         classList: {add: c => classes.add(c), remove: c => classes.delete(c), contains: c => classes.has(c),
           toggle: (c, on) => on ? classes.add(c) : classes.delete(c)},
         replaceChildren(...nodes) { this.children = nodes; }, append(...nodes) { this.children.push(...nodes); },
+        removeChild(node) { this.children.splice(this.children.indexOf(node), 1); return node; },
+        insertBefore(node, before) {
+          const old = this.children.indexOf(node); if (old !== -1) this.children.splice(old, 1);
+          const index = before === null ? this.children.length : this.children.indexOf(before);
+          this.children.splice(index, 0, node); return node;
+        },
         setAttribute() {}, addEventListener() {}, querySelector() { return null; }, focus() {}, close() { this.open = false; }});
     }
     return elements.get(id);
@@ -127,6 +133,65 @@ test('the slash-prefixed room query also prefills the room', () => {
   assert.equal(client('?/room=HJQY9Q').element('join-code').value, 'HJQY9Q');
 });
 
+function drawingClient() {
+  const c = client();
+  c.run("roomCode='DRAWXX';connect()");
+  const ws = c.sockets[0]; ws.readyState = 1;
+  const sent = []; ws.send = payload => sent.push(JSON.parse(payload));
+  const card = (id, suit, rank) => ({id, suit, rank, label:String(rank), symbol:symbolsForTest[suit], group:suit});
+  const symbolsForTest = {S:'♠', H:'♥', C:'♣', D:'♦'};
+  let state = {type:'state',phase:'dealing',version:10,round:1,deal_id:1,seat:0,host:0,turn:1,dealer:0,
+    level:'2',levels:['2','2'],trump:null,bid:null,bid_revision:0,bid_passed:[],deal_closing:false,
+    dealt:5,deal_total:100,counts:[2,1,1,1],score:0,seconds_left:null,
+    trick:[],last_trick:null,trick_number:1,result:null,events:[],
+    players:[0,1,2,3].map(seat=>({seat,name:'Player'+seat,human:true,connected:true,auto:false})),
+    hand:[card(20,'H',2),card(19,'S',3)]};
+  const update = changes => { state = {...state, version:state.version+1, ...changes}; ws.message(state); };
+  update({});
+  return {c, sent, card, update};
+}
+
+test('drawing preserves selected trump cards across seat rotation, hand sorting and the final bidding window', () => {
+  const {c, sent, card, update} = drawingClient();
+  const selectedCard = c.element('hand').children[0]; selectedCard.onclick();
+  update({turn:2, dealt:6, counts:[2,2,1,1]});
+  assert.equal(c.run('selected.has(20)'), true);
+  assert.equal(c.element('hand').children[0], selectedCard, 'another player drawing should not rebuild this hand');
+  // A matching level card arrives, and sorting moves the original selected card.
+  update({turn:1, dealt:9, hand:[card(19,'S',3),card(74,'H',2),card(20,'H',2)]});
+  assert.equal(c.run('selected.has(20)'), true);
+  assert.equal(c.element('hand').children[2], selectedCard, 'new own cards preserve the selected button identity');
+  assert.equal(selectedCard.classList.contains('selected'), true);
+  c.element('hand').children[1].onclick();
+  update({turn:3,dealt:99});
+  update({turn:0,dealt:100,deal_closing:true,deal_seconds_left:60});
+  assert.equal(c.run('selected.size'), 2);
+  assert.equal(c.element('play').disabled, false);
+  c.element('play').onclick();
+  assert.equal(sent[0].action, 'bid');
+  assert.deepEqual(sent[0].ids.sort((a,b)=>a-b), [20,74]);
+  assert.equal(sent[0].version, c.run('state.version'));
+  assert.equal(sent[0].deal_id, 1);
+});
+
+test('drawing selection still clears for a new deal, phase, or seat, and playing selections clear on turn change', () => {
+  for (const change of [{deal_id:2}, {phase:'burying'}, {seat:1}, {round:2}]) {
+    const {c, update} = drawingClient();
+    c.element('hand').children[0].onclick();
+    update(change);
+    assert.equal(c.run('selected.size'), 0, JSON.stringify(change));
+  }
+  const {c, card, update} = drawingClient();
+  c.element('hand').children[0].onclick();
+  update({hand:[card(19,'S',3)]});
+  assert.equal(c.run('selected.size'), 0, 'removed cards cannot stay selected');
+  update({phase:'playing',turn:0});
+  c.element('hand').children[0].onclick();
+  assert.equal(c.run('selected.size'), 1);
+  update({turn:1});
+  assert.equal(c.run('selected.size'), 0);
+});
+
 test('unlimited turns display no countdown while timed turns still do', () => {
   const c = client();
   c.run("state={phase:'playing',turn:0,seat:0,host:0,trick:[],seconds_left:null}; socket={readyState:1}; updateActions()");
@@ -214,6 +279,29 @@ test('previous trick persists separately after the next lead and updates only on
   assert.equal(panel().children[1].children[1].children[0].children[0].textContent, 'A');
   c.run('state.last_trick=null;renderTable()');
   assert.equal(panel(), undefined);
+});
+
+test('agent reactions follow the play into the recap, while absent or long reactions render nothing', () => {
+  const c = client();
+  c.run(`state={phase:'playing',seat:0,dealer:0,turn:1,level:'2',trump:'S',counts:[24,25,25,25],
+    players:[0,1,2,3].map(seat=>({seat,name:'Player'+seat})),trick_number:1,last_trick:null,
+    trick:[{seat:0,reaction:'这分我收了',cards:[{id:9,suit:'D',rank:14,label:'A',symbol:'♦'}]}]};renderTable()`);
+  // Walk the rendered table, not detached DOM nodes from earlier renders.
+  function walk(node) { return [node, ...node.children.flatMap(walk)]; }
+  const reactions = () => walk(c.element('trick-area')).filter(n => n.className === 'play-reaction');
+  assert.deepEqual(reactions().map(n => n.textContent), ['这分我收了']);
+  c.run('state.last_trick={number:1,points:0,winner:0,plays:state.trick};state.trick=[];state.trick_number=2;renderTable()');
+  assert.deepEqual(reactions().map(n => n.textContent), ['这分我收了']);
+  c.run("state.trick=[{seat:1,cards:state.last_trick.plays[0].cards}];renderTable()");
+  assert.equal(reactions().length, 1); // Ordinary players do not get a bubble.
+  c.run("state.last_trick.plays[0].reaction='一二三四五六七八九十';renderTable()");
+  assert.equal(reactions().length, 0);
+  c.run("delete state.last_trick.plays[0].reaction;renderTable()");
+  assert.equal(reactions().length, 0);
+  // Treat model text as text, never HTML.
+  c.run("state.trick[0].reaction='<b>好</b>';renderTable()");
+  assert.equal(reactions()[0].textContent, '<b>好</b>');
+  assert.equal(reactions()[0].children.length, 0);
 });
 
 function playingClient(faces, options, lead = [{suit:'H',rank:7}, {suit:'H',rank:7}]) {
@@ -336,4 +424,19 @@ test('hand availability updates when only the turn changes', () => {
   assert.ok(c.element('hand').children.every(n=>n.disabled));
   c.run('state.turn=0;renderHand(false);updateActions()');
   assert.deepEqual(c.element('hand').children.map(n=>n.disabled), [false,false,false,false,true,true]);
+});
+
+test('search hints leave manual play enabled and never clear an outstanding play request', () => {
+  const c = playingClient(pairFaces, pairOptions);
+  c.run('connect();socket.readyState=1;selected=new Set([0,1]);pending=true;updateActions()');
+  const ws = c.sockets[0];
+  assert.equal(c.element('play').disabled, true);
+  ws.message({type:'hint_pending',version:12});
+  assert.equal(c.element('play').disabled, false);
+  assert.equal(c.element('hint').disabled, true);
+  c.element('play').onclick();
+  assert.equal(c.run('pending'), true);
+  ws.message({type:'hint',version:12,ids:[2,3],action:'play',score:1,reasons:[]});
+  assert.equal(c.run('pending'), true);
+  assert.deepEqual(JSON.parse(c.run('JSON.stringify([...selected])')), [0,1]);
 });

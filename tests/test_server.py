@@ -63,8 +63,10 @@ def prepare_deal(client, room, finish=False, playing=False):
 
 
 def test_http_assets_and_origin_validation(client):
-    assert client.get("/").status_code == 200
-    assert "升级" in client.get("/").text
+    page = client.get("/")
+    assert page.status_code == 200
+    assert "升级" in page.text
+    assert page.headers["cache-control"] == "no-store"
     for path in ("app.js", "style.css"):
         assert client.get(f"/static/{path}").status_code == 200
     assert client.get("/health").json()["status"] == "ok"
@@ -159,7 +161,7 @@ def test_concurrent_bid_accepts_draw_stale_version_only_in_same_deal(client):
 def test_strategy_catalog_creation_validation_and_room_choice(client):
     catalog = client.get("/api/ai-strategies").json()
     assert catalog["default"] == "rule_based"
-    assert {s["id"] for s in catalog["strategies"]} == {"basic", "rule_based"}
+    assert {s["id"] for s in catalog["strategies"]} == {"basic", "rule_based", "xgboost_play", "search", "openai_agent"}
     assert client.post("/api/rooms", json={"name": "南", "ai_strategy": "missing"}).status_code == 422
     assert client.post("/api/rooms", json={"name": "南", "ai_strategy": []}).status_code == 422
     info = client.post("/api/rooms", json={"name": "南", "ai_strategy": "basic"}).json()
@@ -184,6 +186,27 @@ def test_strategy_catalog_creation_validation_and_room_choice(client):
         assert hint["strategy"] == "rule_based" and hint["alternatives"]
         assert all(set(a["ids"]) <= {c["id"] for c in state["hand"]} for a in hint["alternatives"])
         assert hint["score"] == hint["alternatives"][0]["score"]
+
+
+def test_xgboost_room_strategy_provides_legal_play_hint(client):
+    info = client.post('/api/rooms', json={'name': '南', 'ai_strategy': 'xgboost_play'}).json()
+    room = server.rooms[info['room']]
+    with ExitStack() as stack:
+        host, _, state = connect(client, stack, info['room'], info['token'])
+        assert state['ai_strategy'] == 'xgboost_play'
+        host.send_json({'action': 'start', 'version': state['version']})
+        receive(host, 'state', state['version'] + 1)
+        version = prepare_deal(client, room, playing=True)
+        state = receive(host, 'state', version)
+        host.send_json({'action': 'hint', 'version': version})
+        hint = receive(host, 'hint')
+        assert hint['strategy'] == 'xgboost_play'
+        assert hint['action'] == 'play'
+        assert set(hint['ids']) <= {c['id'] for c in state['hand']}
+        host.send_json({'action': 'play', 'ids': hint['ids'], 'version': version})
+        after = receive(host, 'state', version + 1)
+        assert after['turn'] == 1
+        assert len(after['hand']) < len(state['hand'])
 
 
 def test_four_human_clients_play_complete_round_privately(client):

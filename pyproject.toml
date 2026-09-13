@@ -4,11 +4,13 @@ version = "0.1.0"
 description = "实时四人双副牌升级 / Tractor"
 readme = "README.md"
 requires-python = ">=3.11"
-dependencies = ["fastapi>=0.115,<1", "uvicorn[standard]>=0.30,<1"]
+dependencies = ["fastapi>=0.141.1,<1", "starlette>=1.6,<2", "uvicorn[standard]>=0.52.4,<1"]
 
 [project.optional-dependencies]
 test = ["pytest>=8,<10", "httpx>=0.27,<1"]
 build = ["build>=1,<2"]
+train = ["xgboost>=2,<4", "numpy>=1.26,<3"]
+agent = ["openai>=2,<3"]
 
 [project.scripts]
 levelup-serve = "levelup.cli:main"
@@ -32,3 +34,6 @@ namespaces = false
 
 [tool.setuptools.data-files]
 "share/levelup/static" = ["static/*.html", "static/*.css", "static/*.js"]
+
+[tool.setuptools.package-data]
+levelup = ["models/*.json"]

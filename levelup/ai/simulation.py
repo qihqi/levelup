@@ -1,11 +1,12 @@
 """Clock-free incremental dealing for tests and reproducible AI comparisons."""
 
 
-def finish_ai_deal(game, strategies=("rule_based",) * 4, command=None):
+def finish_ai_deal(game, strategies=("rule_based",) * 4, command=None, choose=None):
     """Draw one card at a time and let all AIs react using only current hands.
 
     Production pacing and reaction delay belong to Room, not this simulator.
     An optional command(seat, action, ids) callback records every transition.
+    choose(seat) can select and record a self-play decision, including waits.
     """
     def apply(seat, action, ids=None):
         if command is not None:
@@ -31,7 +32,7 @@ def finish_ai_deal(game, strategies=("rule_based",) * 4, command=None):
                 if seen.get(seat) == signature:
                     continue
                 seen[seat] = signature
-                action, ids = game.ai_action(seat, strategies[seat])
+                action, ids = choose(seat) if choose is not None else game.ai_action(seat, strategies[seat])
                 if action == "bid":
                     apply(seat, action, ids)
                     declared = True

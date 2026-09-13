@@ -27,7 +27,9 @@ python-dotenv==1.2.3
 pyyaml==6.0.3
     # via uvicorn
 starlette==1.6.0
-    # via fastapi
+    # via
+    #   levelup (pyproject.toml)
+    #   fastapi
 typing-extensions==4.16.0
     # via
     #   anyio

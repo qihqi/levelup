@@ -9,7 +9,9 @@ from contextlib import asynccontextmanager
 from dataclasses import dataclass, field
 import logging
 import math
+import os
 import secrets
+import threading
 import time
 
 from fastapi import FastAPI, HTTPException, Request, WebSocket, WebSocketDisconnect
@@ -20,8 +22,12 @@ from pydantic import BaseModel, Field
 from .assets import static_dir
 from .legal import play_options
 from .game import Game, RuleError
-from .ai import DEFAULT_STRATEGY, get_strategy, strategy_catalog
+from .ai import DEFAULT_STRATEGY, get_strategy, strategy_catalog, observe
+from .ai.candidates import generate_candidates
+from .ai.search import SearchStrategy, shutdown_search
+from .ai.openai_agent import OpenAIAgentStrategy
 from .ws_logging import LoggedWebSocket, request_id as audit_request_id
+from .security import TransportSecurity
 
 STATIC_DIR = static_dir()
 log = logging.getLogger("levelup")
@@ -35,6 +41,7 @@ DRAW_INTERVAL = 0.5
 DEAL_CLOSE_SECONDS = 60.0
 AI_BID_DELAY = 0.7
 ROOM_TICK = 0.05
+THINKING_STRATEGIES = (SearchStrategy, OpenAIAgentStrategy)
 
 
 @dataclass
@@ -62,8 +69,46 @@ class Room:
     deal_closes_at: float | None = None
     closing_bid_count: int = 0
     ai_bid_checks: dict = field(default_factory=dict)
+    search_task: asyncio.Task | None = None
+    search_cancel: threading.Event | None = None
+    search_key: tuple | None = None
+    hint_tasks: dict = field(default_factory=dict)
+    hint_requests: dict = field(default_factory=dict)
+    play_reactions: dict = field(default_factory=dict)
+
+    def remember_reaction(self, seat, trick_number, reaction):
+        # Presentation metadata stays outside the rules engine and is tied to
+        # the exact game/deal/trick, so it survives reconnects without leaking
+        # onto a later play by the same seat.
+        from .ai.openai_agent import public_reaction
+        reaction = public_reaction(reaction)
+        prefix = (id(self.game), self.game.deal_id)
+        self.play_reactions = {k: v for k, v in self.play_reactions.items()
+                               if k[:2] == prefix and k[2] >= trick_number - 1}
+        if reaction:
+            self.play_reactions[(*prefix, trick_number, seat)] = reaction
+
+    def search_signature(self):
+        return (id(self.game), self.game.version, self.game.turn, self.ai_strategy)
+
+    def cancel_search(self):
+        if self.search_cancel is not None:
+            self.search_cancel.set()
+        if self.search_task is not None:
+            self.search_task.cancel()
+        self.search_task = self.search_cancel = self.search_key = None
+
+    def search_budget(self):
+        remaining = self.timeout()
+        if remaining is not None:
+            remaining = max(0, remaining - (time.monotonic() - self.changed) - .5)
+        return 28.0 if remaining is None else min(28.0, remaining)
 
     def mark(self):
+        self.cancel_search()
+        for cancel, task in self.hint_tasks.values():
+            cancel.set()
+            task.cancel()
         self.changed = self.touched = time.monotonic()
 
     def automated(self, seat):
@@ -139,6 +184,13 @@ class Room:
     def view(self, seat):
         state = self.game.view(seat)
         game = self.game
+        def with_reaction(play, number):
+            reaction = self.play_reactions.get((id(game), game.deal_id, number, play['seat']))
+            return {**play, **({'reaction': reaction} if reaction else {})}
+        state['trick'] = [with_reaction(p, len(game.history) + 1) for p in state['trick']]
+        if state['last_trick']:
+            last = state['last_trick']
+            state['last_trick'] = {**last, 'plays': [with_reaction(p, last['number']) for p in last['plays']]}
         state["play_options"] = play_options(
             game.rules, game.hands[seat], game.trick[0][1] if game.trick else ()
         ) if game.phase == "playing" and game.turn == seat else None
@@ -146,7 +198,8 @@ class Room:
                       "turn_seconds": self.turn_seconds,
                       "bury_seconds": None if self.turn_seconds is None else math.ceil(self.turn_seconds * 1.5),
                       "timer_options": list(TIMER_OPTIONS),
-                      "ai_strategy": self.ai_strategy, "ai_strategies": strategy_catalog(),
+                      "ai_strategy": self.ai_strategy, "ai_strategies": web_strategy_catalog(),
+                      "ai_thinking": self.search_task is not None and self.search_key == self.search_signature(),
                       "draw_interval": DRAW_INTERVAL,
                       "deal_close_seconds": DEAL_CLOSE_SECONDS,
                       "deal_closing": self.game.phase == "dealing" and self.deal_closes_at is not None,
@@ -180,6 +233,54 @@ class Room:
 rooms: dict[str, Room] = {}
 
 
+async def search_ranking(context, strategy, seconds, cancel):
+    # Both slow policies work on immutable player-visible snapshots, outside the
+    # room lock. Remote I/O is async; CPU search uses its shared process pool.
+    def work():
+        return strategy.search(context, generate_candidates(context), seconds=seconds, cancel=cancel)
+    try:
+        if isinstance(strategy, OpenAIAgentStrategy):
+            async def decide():
+                candidates = await asyncio.to_thread(generate_candidates, context)
+                return await strategy.decide(context, candidates, seconds=seconds, cancel=cancel)
+            return await asyncio.wait_for(decide(), timeout=seconds + .2)
+        return await asyncio.wait_for(asyncio.to_thread(work), timeout=seconds + .2)
+    except (asyncio.CancelledError, asyncio.TimeoutError):
+        cancel.set()
+        raise
+
+
+def consume_task_error(task):
+    if not task.cancelled():
+        task.exception()  # A discarded stale task must not emit an unhandled exception.
+
+
+async def search_hint(room, seat, ws, context, key, strategy, seconds, cancel):
+    try:
+        result = await search_ranking(context, strategy, seconds, cancel)
+        async with room.lock:
+            if (room.search_signature() != key or cancel.is_set()
+                    or room.players.get(seat) is None or room.players[seat].socket is not ws):
+                return
+            ranked = result.ranked
+            await ws.send_json({'type': 'hint', **ranked[0].json(), 'strategy': strategy.id,
+                               'alternatives': [r.json() for r in ranked[:3]],
+                               ('agent' if isinstance(strategy, OpenAIAgentStrategy) else 'search'): result.report,
+                               'version': room.game.version,
+                               'deal_id': room.game.deal_id})
+    except asyncio.CancelledError:
+        cancel.set()
+        raise
+    except Exception:
+        log.exception('AI hint failed: %s', room.code)
+        async with room.lock:
+            if room.search_signature() == key and room.players[seat].socket is ws:
+                await error(ws, 'AI 提示暂不可用，请手动出牌。')
+    finally:
+        if room.hint_tasks.get(seat, (None, None))[1] is asyncio.current_task():
+            room.hint_tasks.pop(seat, None)
+
+
 async def run_room(room):
     try:
         while rooms.get(room.code) is room:
@@ -187,11 +288,17 @@ async def run_room(room):
             async with room.lock:
                 connected = any(p.socket for p in room.players.values())
                 if not connected:
+                    room.cancel_search()
+                    for cancel, task in room.hint_tasks.values():
+                        cancel.set()
+                        task.cancel()
                     if time.monotonic() - room.touched > ROOM_TTL:
                         rooms.pop(room.code, None)
                         return
                     continue  # Pause abandoned rooms instead of burning CPU playing AI rounds.
                 game = room.game
+                if room.search_task is not None and room.search_key != room.search_signature():
+                    room.cancel_search()
                 if game.phase == "dealing":
                     if room.advance_dealing(time.monotonic()):
                         await room.broadcast()
@@ -203,13 +310,52 @@ async def run_room(room):
                 limit = AI_DELAY if automatic else room.timeout()
                 if limit is None or elapsed < limit:
                     continue
-                action, ids = game.ai_action(game.turn, room.ai_strategy)
+                strategy = get_strategy(room.ai_strategy)
+                reaction = ''
+                if game.phase == 'playing' and isinstance(strategy, THINKING_STRATEGIES) and automatic:
+                    if room.search_task is None:
+                        room.search_cancel = threading.Event()
+                        room.search_key = room.search_signature()
+                        room.search_task = asyncio.create_task(search_ranking(
+                            observe(game, game.turn), strategy, room.search_budget(), room.search_cancel))
+                        room.search_task.add_done_callback(consume_task_error)
+                        await room.broadcast()
+                        continue
+                    if not room.search_task.done():
+                        continue
+                    try:
+                        result = room.search_task.result()
+                        chosen = result.ranked[0].action
+                        action, ids = chosen.kind, [c.id for c in chosen.cards]
+                        if isinstance(strategy, OpenAIAgentStrategy):
+                            reaction = result.report.get('reaction', '') if result.report.get('status') == 'selected' else ''
+                            # Server-only diagnostics correlated with the exact
+                            # turn; private tactical reasons are not broadcast.
+                            for player in room.players.values():
+                                if isinstance(player.socket, LoggedWebSocket):
+                                    player.socket.record('agent_decision', version=game.version,
+                                                         deal_id=game.deal_id, seat=game.turn,
+                                                         ids=ids, agent=result.report)
+                                    break
+                    except Exception:
+                        log.exception('AI failed, using rule-based fallback: %s', room.code)
+                        reaction = ''
+                        action, ids = game.ai_action(game.turn, 'rule_based')
+                    room.cancel_search()
+                else:
+                    # An expired human clock must not start another slow request.
+                    policy = 'rule_based' if isinstance(strategy, THINKING_STRATEGIES) else room.ai_strategy
+                    action, ids = game.ai_action(game.turn, policy)
                 if not automatic:
                     game.log(f"{game.turn + 1} 号位操作超时，AI 代行本次操作。")
-                game.act(game.turn, action, ids)
+                seat, trick_number = game.turn, len(game.history) + 1
+                game.act(seat, action, ids)
+                if action == 'play':
+                    room.remember_reaction(seat, trick_number, reaction)
                 room.mark()
                 await room.broadcast()
     except asyncio.CancelledError:
+        room.cancel_search()
         raise
     except Exception:
         log.exception("Room actor failed: %s", room.code)
@@ -226,13 +372,21 @@ async def run_room(room):
 async def lifespan(app):
     yield
     tasks = [r.task for r in rooms.values() if r.task]
+    for room in rooms.values():
+        room.cancel_search()
+        for cancel, task in room.hint_tasks.values():
+            cancel.set()
+            task.cancel()
+            tasks.append(task)
     for task in tasks:
         task.cancel()
     await asyncio.gather(*tasks, return_exceptions=True)
     rooms.clear()
+    shutdown_search()
 
 
 app = FastAPI(title="升级 · Levelup", lifespan=lifespan)
+app.add_middleware(TransportSecurity)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
@@ -243,7 +397,8 @@ class CreateRoom(BaseModel):
 
 @app.get("/")
 async def index():
-    return FileResponse(STATIC_DIR / "index.html")
+    # Always fetch the entry point so reloads pick up the current asset versions.
+    return FileResponse(STATIC_DIR / "index.html", headers={"Cache-Control": "no-store"})
 
 
 @app.get("/health")
@@ -253,12 +408,33 @@ async def health():
 
 @app.get("/api/ai-strategies")
 async def ai_strategies():
-    return {"default": DEFAULT_STRATEGY, "strategies": strategy_catalog()}
+    return {"default": DEFAULT_STRATEGY, "strategies": web_strategy_catalog()}
+
+
+def web_strategy_catalog():
+    configured = os.environ.get('LEVELUP_WEB_AI_STRATEGIES')
+    allowed = None if configured is None else {s.strip() for s in configured.split(',')}
+    return [s for s in strategy_catalog() if allowed is None or s['id'] in allowed or s['id'] == DEFAULT_STRATEGY]
+
+
+def web_strategy(strategy_id):
+    strategy = get_strategy(strategy_id)
+    if strategy.id not in {s['id'] for s in web_strategy_catalog()}:
+        raise RuleError("服务器未开放此 AI 策略。")
+    return strategy
 
 
 def same_origin(origin, host):
     from urllib.parse import urlsplit
-    return not origin or urlsplit(origin).netloc == host
+    if origin is None:
+        return True  # CLI clients do not send Origin; this is not authentication.
+    try:
+        parsed = urlsplit(origin)
+        return (parsed.scheme in ('http', 'https') and bool(parsed.hostname)
+                and parsed.netloc == host and not parsed.username and not parsed.password
+                and not parsed.path and not parsed.query and not parsed.fragment)
+    except ValueError:
+        return False
 
 
 @app.post("/api/rooms")
@@ -269,7 +445,7 @@ async def create_room(body: CreateRoom, request: Request):
     if not name:
         raise HTTPException(422, "请输入昵称。")
     try:
-        get_strategy(body.ai_strategy)
+        web_strategy(body.ai_strategy)
     except RuleError as exc:
         raise HTTPException(422, str(exc)) from exc
     if len(rooms) >= MAX_ROOMS:
@@ -309,6 +485,8 @@ async def websocket_room(ws: WebSocket, code: str):
         if not isinstance(hello, dict):
             raise RuleError("连接请求格式错误。")
         token = hello.get("token")
+        if token is not None and (not isinstance(token, str) or len(token) > 128 or not token.isascii()):
+            raise RuleError("恢复身份格式错误。")
         async with room.lock:
             if isinstance(token, str) and token:
                 for i, p in room.players.items():
@@ -384,6 +562,24 @@ async def websocket_room(ws: WebSocket, code: str):
                     if action == "hint":
                         if room.game.phase not in ("dealing", "burying", "playing") or (room.game.phase != "dealing" and seat != room.game.turn):
                             raise RuleError("轮到你时才能获取提示。")
+                        strategy = get_strategy(room.ai_strategy)
+                        if room.game.phase == 'playing' and isinstance(strategy, THINKING_STRATEGIES):
+                            hint_key = (id(room.game), room.game.deal_id, len(room.game.history), len(room.game.trick))
+                            if room.hint_requests.get(seat) == hint_key:
+                                raise RuleError("本次出牌已请求过 AI 提示，请等待结果或手动出牌。")
+                            room.hint_requests[seat] = hint_key
+                            previous_hint = room.hint_tasks.get(seat)
+                            if previous_hint is not None:
+                                previous_hint[0].set()
+                                previous_hint[1].cancel()
+                            cancel = threading.Event()
+                            task = asyncio.create_task(search_hint(
+                                room, seat, ws, observe(room.game, seat), room.search_signature(),
+                                strategy, room.search_budget(), cancel))
+                            task.add_done_callback(consume_task_error)
+                            room.hint_tasks[seat] = (cancel, task)
+                            await ws.send_json({'type': 'hint_pending', 'version': room.game.version})
+                            continue
                         ranked = room.game.ai_rankings(seat, room.ai_strategy)
                         best = ranked[0].json()
                         await ws.send_json({"type": "hint", **best, "strategy": room.ai_strategy,
@@ -395,7 +591,7 @@ async def websocket_room(ws: WebSocket, code: str):
                             raise RuleError("只有房主可以选择 AI 策略。")
                         if room.game.phase not in ("lobby", "round_end", "match_end"):
                             raise RuleError("请在开局前或本局结束后切换 AI 策略。")
-                        chosen = get_strategy(message.get("strategy"))
+                        chosen = web_strategy(message.get("strategy"))
                         room.ai_strategy = chosen.id
                         room.game.version += 1
                         room.game.log(f"房间 AI 已切换为{chosen.name}。")
@@ -473,6 +669,10 @@ async def websocket_room(ws: WebSocket, code: str):
         if player is not None:
             async with room.lock:
                 if player.socket is ws:
+                    hint = room.hint_tasks.get(seat)
+                    if hint is not None:
+                        hint[0].set()
+                        hint[1].cancel()
                     player.socket = None
                     room.touched = time.monotonic()
                     # Transfer host controls when someone leaves; the seat itself stays reserved.

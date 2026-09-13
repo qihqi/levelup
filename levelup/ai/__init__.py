@@ -60,3 +60,13 @@ def rank_actions(context, strategy_id=DEFAULT_STRATEGY):
             {r.action.key for r in ranked} != {a.key for a in candidates}):
         raise ValueError("Strategy must rank each supplied candidate exactly once")
     return ranked
+
+# Loading the strategy does not import native ML libraries or read model weights.
+from .xgboost_play import XGBoostPlayStrategy
+register(XGBoostPlayStrategy())
+
+from .search import SearchStrategy
+register(SearchStrategy())
+
+from .openai_agent import OpenAIAgentStrategy
+register(OpenAIAgentStrategy())
