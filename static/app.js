@@ -15,6 +15,43 @@ const safeStorage = {
   set(k, v) { try { sessionStorage.setItem(k, v); } catch {} },
   remove(k) { try { sessionStorage.removeItem(k); } catch {} }
 };
+const persistentStorage = {
+  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch {} }
+};
+let identity = persistentStorage.get('levelup:identity') || '';
+function rememberIdentity(message) {
+  if (message.identity) { identity = message.identity; persistentStorage.set('levelup:identity', identity); }
+  if (message.name) { persistentStorage.set('levelup:name', message.name); $('name').value = message.name; }
+}
+async function loadPendingGames() {
+  if (!identity) return;
+  const requestedIdentity = identity;
+  $('pending-games').hidden = false;
+  $('pending-status').textContent = '正在查找未完成的牌桌…';
+  try {
+    const response = await fetch('/api/me/rooms', {headers: {Authorization: `Bearer ${identity}`},
+      cache: 'no-store', signal: AbortSignal.timeout(10000)});
+    const result = await response.json();
+    if (requestedIdentity !== identity) return;
+    if (!response.ok) throw new Error(typeof result.detail === 'string' ? result.detail : '暂时无法读取牌桌。');
+    if (!$('name').value && result.name) $('name').value = result.name;
+    renderPendingGames(result.rooms || []);
+  } catch (error) { $('pending-status').textContent = `${error.message} 可点击刷新重试。`; }
+}
+function renderPendingGames(games) {
+  $('pending-list').replaceChildren();
+  $('pending-status').textContent = games.length ? '回到原座位；所有真人归队后继续。' : '暂无未完成的牌桌。';
+  for (const game of games) {
+    const row = text('div', '', 'pending-game');
+    const detail = text('div', '');
+    detail.append(text('strong', game.room), text('span', `第 ${game.round} 局 · ${phases[game.phase] || game.phase}`),
+      text('small', game.players.map(p => p.name).join('、')));
+    const button = text('button', '回到牌桌', 'secondary');
+    button.onclick = () => { $('join-code').value = game.room; joinRoom(); };
+    row.append(detail, button); $('pending-list').append(row);
+  }
+}
 function text(tag, value, className = '') {
   const node = document.createElement(tag); node.textContent = value; node.className = className; return node;
 }
@@ -25,7 +62,7 @@ function toast(message) {
 function nickname() {
   const name = $('name').value.trim();
   if (!name) { $('name').focus(); toast('先填写你的昵称。'); return null; }
-  safeStorage.set('levelup:name', name); return name;
+  safeStorage.set('levelup:name', name); persistentStorage.set('levelup:name', name); return name;
 }
 function busy(value) {
   connecting = value; $('create').disabled = value; $('join').disabled = value;
@@ -45,9 +82,11 @@ function returnToLobby(message = '', failedRoom = roomCode, invalidateToken = fa
   if ($('info-dialog').open) $('info-dialog').close();
   if ($('result-dialog').open) $('result-dialog').close();
   if ($('previous-dialog').open) $('previous-dialog').close();
+  if ($('players-dialog').open) $('players-dialog').close();
   document.body.classList.remove('in-game'); $('table').classList.remove('is-playing');
   $('seats').replaceChildren(); $('hand').replaceChildren(); $('waiting').replaceChildren();
   $('trick-area').replaceChildren();
+  $('pause-banner').hidden = true;
   for (const id of ['waiting', 'trick-area', 'table-caption', 'hand-section', 'room-tools', 'ai-panel', 'ai-hint', 'mobile-status', 'info-button', 'toast']) $(id).hidden = true;
   $('lobby').hidden = false; $('room-error').hidden = !message; $('room-error').textContent = message;
   $('page-title').textContent = message ? '换一桌，随时开局。' : '好牌，和朋友一起打。';
@@ -61,6 +100,7 @@ function returnToLobby(message = '', failedRoom = roomCode, invalidateToken = fa
   $('current-level').textContent = '2'; $('current-trump').textContent = '待亮主';
   $('events').replaceChildren(text('li', '创建新房间，或使用完整邀请链接加入。'));
   history.replaceState(null, '', '/');
+  loadPendingGames();
 }
 function send(action, extra = {}) {
   if (!state || !socket || socket.readyState !== WebSocket.OPEN) return toast('正在连接，请稍候。');
@@ -76,10 +116,11 @@ async function createRoom(event) {
   busy(true); reconnectAttempts = 0; $('room-error').hidden = true;
   try {
     const ai_strategy = $('create-strategy').value || undefined;
-    const response = await fetch('/api/rooms', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name, ai_strategy}), signal: AbortSignal.timeout(10000)});
+    const response = await fetch('/api/rooms', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({name, ai_strategy, identity: identity || undefined}), signal: AbortSignal.timeout(10000)});
     const result = await response.json();
     if (generation !== requestGeneration) return;
     if (!response.ok) throw new Error(typeof result.detail === 'string' ? result.detail : '创建失败，请重试。');
+    rememberIdentity(result);
     token = result.token; roomCode = result.room;
     safeStorage.set(`levelup:${roomCode}`, token);
     connect();
@@ -104,11 +145,12 @@ function connect() {
   connectTimer = setTimeout(() => {
     if (socket === ws) returnToLobby('连接房间超时。可以重新加入，或点击「创建房间」开始新游戏。');
   }, 12000);
-  ws.onopen = () => { if (socket === ws) ws.send(JSON.stringify({name: $('name').value.trim() || safeStorage.get('levelup:name') || '牌友', token})); };
+  ws.onopen = () => { if (socket === ws) ws.send(JSON.stringify({name: $('name').value.trim() || persistentStorage.get('levelup:name') || '牌友', token, identity: identity || undefined})); };
   ws.onmessage = event => {
     if (socket !== ws) return;
     const message = JSON.parse(event.data);
     if (message.type === 'welcome') {
+      rememberIdentity(message);
       token = message.token; safeStorage.set(`levelup:${roomCode}`, token);
       history.replaceState(null, '', `/?room=${roomCode}`);
       $('connection').textContent = '已连接'; $('connection').className = 'connection online';
@@ -154,12 +196,13 @@ function connect() {
     if (socket !== ws || manualClose) return;
     clearTimeout(connectTimer); pending = false; updateActions();
     $('connection').textContent = '连接中断'; $('connection').className = 'connection';
-    if ([4001, 4003, 4004, 1008].includes(event.code)) {
+    if ([4001, 4003, 4004, 4005, 1008].includes(event.code)) {
       const reason = event.code === 4004
         ? `房间 ${roomCode} 不在当前服务器或已过期。请使用原来的完整邀请链接（包括端口），或点击「创建房间」开始新游戏。`
         : event.code === 4001 ? '此座位已在另一连接恢复。你可以创建新房间，或重新加入。'
+        : event.code === 4005 ? '房主已将你移出牌桌，该座位由 AI 接管。'
         : `${connectionError || '无法加入此房间。'} 你可以点击「创建房间」开始新游戏。`;
-      returnToLobby(reason, roomCode, event.code === 4003 || event.code === 4004); return;
+      returnToLobby(reason, roomCode, [4003, 4004, 4005].includes(event.code)); return;
     }
     if (++reconnectAttempts >= 3) {
       returnToLobby('暂时无法连接房间。你可以重新加入，或点击「创建房间」开始新游戏。'); return;
@@ -208,7 +251,7 @@ function updateHandAvailability(guidance) {
   if (!state?.hand) return;
   const active = ['dealing', 'burying', 'playing'].includes(state.phase);
   const mine = state.phase === 'dealing' || state.turn === state.seat;
-  const available = active && mine && socket?.readyState === WebSocket.OPEN && !pending;
+  const available = active && mine && !state.paused && socket?.readyState === WebSocket.OPEN && !pending;
   for (const [i, card] of state.hand.entries()) {
     const node = $('hand').children[i];
     if (!node) continue;
@@ -224,7 +267,7 @@ function cancelForcedPlay() {
   clearTimeout(forcedTimer); forcedTimer = null; forcedTimerKey = '';
 }
 function forcedPlayKey() {
-  if (!state || state.phase !== 'playing' || state.turn !== state.seat ||
+  if (!state || state.paused || state.phase !== 'playing' || state.turn !== state.seat ||
       !state.play_options?.forced?.length || state.players?.[state.seat]?.auto ||
       !$('auto-forced').checked || pending || socket?.readyState !== WebSocket.OPEN) return '';
   return JSON.stringify([roomCode, state.deal_id, state.round, state.version, state.seat]);
@@ -269,6 +312,23 @@ function cardNode(card, mini = false, selectable = false) {
 function nameOf(seat) { return state.players[seat].name; }
 function teamOf(seat) { return seat % 2 === state.seat % 2 ? 'ally' : 'opponent'; }
 function roleOf(seat) { return seat === state.seat ? '你' : teamOf(seat) === 'ally' ? '队友' : '对手'; }
+function renderPlayerManager() {
+  $('manage-players').hidden = state.host !== state.seat;
+  const container = $('players-list'); container.replaceChildren();
+  for (const player of state.players.filter(p => p.human)) {
+    const row = text('div', '', 'player-management');
+    row.append(text('span', `${player.name} · ${player.connected ? '已归队' : '等待归队'}${player.seat === state.host ? ' · 房主' : ''}`));
+    if (state.host === state.seat && player.seat !== state.seat) {
+      const button = text('button', '移除 · AI 接管', 'secondary');
+      button.onclick = () => {
+        if (confirm(`将 ${player.name} 移出牌桌，由 AI 接管这个座位？`)) send('kick', {seat: player.seat});
+      };
+      button.disabled = pending || socket?.readyState !== WebSocket.OPEN;
+      row.append(button);
+    }
+    container.append(row);
+  }
+}
 function renderSeats() {
   const container = $('seats'); container.replaceChildren();
   const positions = ['south', 'east', 'north', 'west'];
@@ -313,6 +373,10 @@ function render() {
   $('events').replaceChildren(...state.events.slice().reverse().map(e => text('li', e)));
   if (state.phase === 'dealing' && state.round === 1) $('score-note').textContent = '首局抢庄 · 最后亮主者坐庄';
   renderSeats(); renderTable(); renderHand(false); renderAI(); updateActions();
+  renderPlayerManager();
+  $('pause-banner').hidden = !state.paused;
+  $('pause-message').textContent = state.paused
+    ? `牌桌已暂停 · 等待 ${(state.waiting_for || []).map(nameOf).join('、')} 归队` : '';
   if (state.result) renderResult();
   if (state.result && shownResult !== `${state.round}:${state.phase}`) {
     shownResult = `${state.round}:${state.phase}`; $('result-dialog').showModal();
@@ -338,7 +402,7 @@ function renderTable() {
       controls.append(label, select); waiting.append(controls);
     }
     const button = text('button', state.host === state.seat ? '开始游戏' : '等待房主开始', 'primary');
-    button.disabled = state.host !== state.seat; button.onclick = () => send('start'); waiting.append(button);
+    button.disabled = state.host !== state.seat || state.paused; button.onclick = () => send('start'); waiting.append(button);
   } else if (state.phase === 'dealing') {
     waiting.append(text('span', `打 ${state.level} · 已摸 ${state.dealt} / ${state.deal_total} 张`, 'phase-badge'));
     waiting.append(text('h2', state.bid ? `${symbols[state.trump] || '无主'} 已亮` : '边摸牌，边亮主。'));
@@ -350,7 +414,7 @@ function renderTable() {
       waiting.append(text('p', `${nameOf(state.bid.seat)} 亮主 · 仍可加固或反主`));
     } else waiting.append(text('p', `摸到级牌 ${state.level} 即可亮主，一对王可亮无主。`));
     waiting.append(text('p', state.deal_closing
-      ? `底牌暂不发放，可亮主 / 反主或点击「${bidPassLabel()}」。\n${state.bid_passed?.length || 0} / 4 人已确认 · 全员确认或倒计时结束后定主、发底牌。`
+      ? `${bidSkipMessage() || `底牌暂不发放，可亮主 / 反主或点击「${bidPassLabel()}」。`}\n${state.bid_passed?.length || 0} / 4 人已确认 · 全员确认或倒计时结束后定主、发底牌。`
       : '每 0.5 秒全桌摸一张 · 每人 25 张\n无需等轮次，选中手里的级牌随时亮主。', 'deal-message'));
   } else if (state.phase === 'burying') {
     waiting.append(text('span', `${symbols[state.trump] || '无主'} · 打 ${state.level}`, 'phase-badge'));
@@ -454,6 +518,12 @@ function bidPassLabel() {
   const dealer = state.round === 1 ? state.bid?.seat : state.dealer;
   return dealer === state.seat ? '不改主' : '不亮';
 }
+function bidSkipMessage() {
+  if (!state.deal_closing) return '';
+  if (state.bid_skip_reason === 'own_bid') return '当前主由你亮出，无需确认 · 等待其他玩家';
+  if (state.bid_skip_reason === 'no_legal_bid') return '没有可亮主 / 反主的牌，无需确认 · 等待其他玩家';
+  return '';
+}
 function updateActions() {
   if (!state) return;
   const active = ['dealing', 'burying', 'playing'].includes(state.phase);
@@ -463,10 +533,10 @@ function updateActions() {
   $('room-timer').disabled = $('room-ai').disabled;
   if ($('start-timer')) $('start-timer').disabled = !available || state.host !== state.seat;
   const startButton = $('waiting').querySelector('button');
-  if (startButton && state.phase === 'lobby') startButton.disabled = !available || state.host !== state.seat;
+  if (startButton && state.phase === 'lobby') startButton.disabled = !available || state.host !== state.seat || state.paused;
   $('turn-message').textContent = active ? (mine ? '轮到你了' : `等待 ${nameOf(state.turn)}`) : phases[state.phase];
   if (state.phase === 'dealing') $('turn-message').textContent = state.deal_closing
-    ? `最后亮主 · ${Math.max(0, Math.ceil((dealDeadline - Date.now()) / 1000))} 秒`
+    ? bidSkipMessage() || `最后亮主 · ${Math.max(0, Math.ceil((dealDeadline - Date.now()) / 1000))} 秒`
     : '摸牌中 · 随时亮主';
   else if (mine) $('turn-message').textContent += state.seconds_left === null ? ' · 不限时' : ` · ${Math.max(0, Math.ceil((deadline - Date.now()) / 1000))} 秒`;
   $('selected-count').textContent = state.phase === 'playing' ? `${selected.size ? `已选 ${selected.size} · ` : ''}${followPrompt()}` : selected.size ? `已选 ${selected.size} 张${state.phase === 'burying' ? ' / 8' : ''}` : '点击手牌选择';
@@ -481,11 +551,17 @@ function updateActions() {
   }
   const finalBid = state.phase === 'dealing' && state.deal_closing && Array.isArray(state.bid_passed);
   const passed = state.bid_passed?.includes(state.seat);
-  $('pass-bid').hidden = !finalBid;
+  const skipBid = Boolean(finalBid && state.bid_skip_reason);
+  $('pass-bid').hidden = !finalBid || skipBid;
   $('pass-bid').textContent = passed ? '已确认' : bidPassLabel();
   $('pass-bid').disabled = !finalBid || !available || passed;
   $('clear').hidden = Boolean(finalBid);
   $('hint').disabled = !mine || !available || hintPendingVersion === state.version; $('clear').disabled = !selected.size;
+  if (skipBid) { $('play').disabled = true; $('hint').disabled = true; }
+  if (state.paused) {
+    $('turn-message').textContent = '已暂停 · 等待真人归队';
+    for (const id of ['play', 'hint', 'pass-bid']) $(id).disabled = true;
+  }
   $('auto').disabled = !active || !available;
   syncForcedPlay();
 }
@@ -539,7 +615,7 @@ function renderResult() {
   if (r.champion === null) body.append(text('p', `下一局由 ${nameOf(r.next_dealer)} 坐庄。南北打 ${state.levels[0]}，东西打 ${state.levels[1]}。`));
   const actions = $('result-actions'); actions.replaceChildren();
   const button = text('button', state.host === state.seat ? (r.champion !== null ? '新比赛 · 从 2 开始' : '开始下一局') : '等待房主开始下一局', 'primary');
-  button.disabled = state.host !== state.seat;
+  button.disabled = state.host !== state.seat || state.paused;
   button.onclick = () => { send(r.champion !== null ? 'restart' : 'next'); }; actions.append(button);
 }
 $('lobby-form').addEventListener('submit', createRoom);
@@ -571,8 +647,11 @@ $('copy-room').onclick = async () => {
   catch { toast(`房间号：${roomCode}，复制地址栏链接即可邀请。`); }
 };
 $('leave').onclick = () => returnToLobby();
+$('manage-players').onclick = () => { renderPlayerManager(); $('players-dialog').showModal(); };
+$('refresh-pending').onclick = loadPendingGames;
 $('cancel-connect').onclick = () => returnToLobby('已取消连接。可以重新加入，或创建新房间。');
-$('name').value = safeStorage.get('levelup:name') || '';
+$('name').value = persistentStorage.get('levelup:name') || safeStorage.get('levelup:name') || '';
+loadPendingGames();
 fetch('/api/ai-strategies').then(response => {
   if (!response.ok) throw new Error('策略列表暂不可用');
   return response.json();
@@ -585,7 +664,7 @@ const invited = (inviteParams.get('room') || inviteParams.get('/room'))?.toUpper
 if (invited && /^[A-Z2-9]{6}$/.test(invited)) {
   $('join-code').value = invited;
   const saved = safeStorage.get(`levelup:${invited}`);
-  if (saved) { roomCode = invited; token = saved; busy(true); connect(); }
+  if (saved || identity) { roomCode = invited; token = saved || ''; busy(true); connect(); }
 }
 setInterval(updateActions, 1000);
 setInterval(() => { if (socket?.readyState === WebSocket.OPEN && !pending) socket.send(JSON.stringify({action: 'ping'})); }, 25000);

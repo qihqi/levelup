@@ -54,7 +54,7 @@ class TransportSecurity:
                 message = {**message, 'headers': headers}
             await send(message)
 
-        if scope['method'] == 'POST' and scope['path'] == '/api/rooms':
+        if scope['method'] == 'POST' and scope['path'] in ('/api/rooms', '/api/identity'):
             peer = (scope.get('client') or ('unknown', 0))[0]
             if not self.room_limiter.allow(peer):
                 return await JSONResponse({'detail': '创建房间过快，请稍后再试。'}, 429,

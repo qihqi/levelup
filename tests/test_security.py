@@ -5,7 +5,6 @@ import stat
 import threading
 
 import pytest
-from fastapi.testclient import TestClient
 from starlette.websockets import WebSocketDisconnect
 
 from levelup import server, security, ws_logging
@@ -33,10 +32,11 @@ def test_http_limits_and_headers(client, monkeypatch):
         if path.startswith(('/.env', '/logs')):
             assert response.status_code == 404
     monkeypatch.setattr(security, 'ROOM_CREATIONS_PER_MINUTE', 1)
-    with TestClient(server.app, client=('rate-limit-test', 1)) as limited:
-        assert limited.post('/api/rooms', json={'name': '南'}).status_code == 200
-        response = limited.post('/api/rooms', json={'name': '南'})
-        assert response.status_code == 429 and response.headers['retry-after'] == '60'
+    # Keep the existing app lifespan/database connection, but use a fresh peer.
+    monkeypatch.setattr(client._transport, 'client', ('rate-limit-test', 1))
+    assert client.post('/api/rooms', json={'name': '南'}).status_code == 200
+    response = client.post('/api/rooms', json={'name': '南'})
+    assert response.status_code == 429 and response.headers['retry-after'] == '60'
 
 
 @pytest.mark.parametrize('token', ['中文', 'x' * 129, ['not-a-string']])

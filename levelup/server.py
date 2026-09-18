@@ -1,4 +1,4 @@
-"""In-memory rooms, private player views, and serialized WebSocket actions.
+"""SQLite-backed rooms, private player views, and serialized WebSocket actions.
 
 Run a single worker: a room and its sockets must live in the same process.
 """
@@ -28,6 +28,7 @@ from .ai.search import SearchStrategy, shutdown_search
 from .ai.openai_agent import OpenAIAgentStrategy
 from .ws_logging import LoggedWebSocket, request_id as audit_request_id
 from .security import TransportSecurity
+from .storage import Store, database_path, restore_game
 
 STATIC_DIR = static_dir()
 log = logging.getLogger("levelup")
@@ -50,6 +51,7 @@ class Player:
     token: str = field(default_factory=lambda: secrets.token_urlsafe(32))
     socket: WebSocket | None = None
     auto: bool = False
+    identity: str | None = None
 
 
 @dataclass
@@ -75,6 +77,38 @@ class Room:
     hint_tasks: dict = field(default_factory=dict)
     hint_requests: dict = field(default_factory=dict)
     play_reactions: dict = field(default_factory=dict)
+    paused_at: float | None = None
+
+    @property
+    def waiting_for(self):
+        return [seat for seat, p in self.players.items() if p.socket is None]
+
+    @property
+    def paused(self):
+        return bool(self.waiting_for)
+
+    def sync_presence(self):
+        now = time.monotonic()
+        if self.paused and self.paused_at is None:
+            self.paused_at = now
+            self.cancel_search()
+            for cancel, task in self.hint_tasks.values():
+                cancel.set()
+                task.cancel()
+            return True
+        if not self.paused and self.paused_at is not None:
+            elapsed = now - self.paused_at
+            self.changed += elapsed
+            self.next_draw_at += elapsed
+            if self.deal_closes_at is not None:
+                self.deal_closes_at += elapsed
+            self.paused_at = None
+            return True
+        return False
+
+    def persist(self):
+        if store is not None and rooms.get(self.code) is self:
+            store.save_room(self)
 
     def remember_reaction(self, seat, trick_number, reaction):
         # Presentation metadata stays outside the rules engine and is tied to
@@ -109,11 +143,12 @@ class Room:
         for cancel, task in self.hint_tasks.values():
             cancel.set()
             task.cancel()
-        self.changed = self.touched = time.monotonic()
+        self.touched = time.monotonic()
+        self.changed = self.paused_at if self.paused_at is not None else self.touched
 
     def automated(self, seat):
         p = self.players.get(seat)
-        return p is None or p.socket is None or p.auto
+        return p is None or p.auto
 
     def sync_deal_clock(self, now, resume=False):
         if self.game.phase == "dealing" and (resume or self.dealing_id != self.game.deal_id):
@@ -127,13 +162,21 @@ class Room:
             self.closing_bid_count = len(self.game.declarations)
             self.deal_closes_at = now + DEAL_CLOSE_SECONDS
 
+    def auto_confirm_bids(self):
+        changed = False
+        for seat in range(4):
+            if seat not in self.game.bid_passed and self.game.bid_skip_reason(seat):
+                self.game.act(seat, "pass")
+                changed = True
+        return changed
+
     def advance_dealing(self, now):
         """Keep dealing independent of human actions, AI pauses and turn timers."""
         game = self.game
-        if game.phase != "dealing":
+        if game.phase != "dealing" or self.paused:
             return False
         self.sync_deal_clock(now)
-        changed = False
+        changed = self.auto_confirm_bids()
         if self.deal_closes_at is not None and (now >= self.deal_closes_at or len(game.bid_passed) == 4):
             game.finish_dealing()
             self.changed = self.touched = now
@@ -146,6 +189,7 @@ class Room:
             if not game.draw_pile:
                 self.deal_closes_at = now + DEAL_CLOSE_SECONDS
             changed = True
+        changed = self.auto_confirm_bids() or changed
         for seat in range(4):
             if not game.draw_pile and seat in game.bid_passed:
                 continue
@@ -172,6 +216,7 @@ class Room:
                 game.act(seat, "pass")
                 changed = True
         self.sync_deal_clock(now)
+        changed = self.auto_confirm_bids() or changed
         if not game.draw_pile and len(game.bid_passed) == 4:
             game.finish_dealing()
             self.changed = now
@@ -195,6 +240,7 @@ class Room:
             game.rules, game.hands[seat], game.trick[0][1] if game.trick else ()
         ) if game.phase == "playing" and game.turn == seat else None
         state.update({"type": "state", "room": self.code, "seat": seat, "host": self.host,
+                      "paused": self.paused, "waiting_for": self.waiting_for,
                       "turn_seconds": self.turn_seconds,
                       "bury_seconds": None if self.turn_seconds is None else math.ceil(self.turn_seconds * 1.5),
                       "timer_options": list(TIMER_OPTIONS),
@@ -203,14 +249,14 @@ class Room:
                       "draw_interval": DRAW_INTERVAL,
                       "deal_close_seconds": DEAL_CLOSE_SECONDS,
                       "deal_closing": self.game.phase == "dealing" and self.deal_closes_at is not None,
-                      "deal_seconds_left": max(0, math.ceil(self.deal_closes_at - time.monotonic()))
+                      "deal_seconds_left": max(0, math.ceil(self.deal_closes_at - (self.paused_at if self.paused_at is not None else time.monotonic())))
                           if self.game.phase == "dealing" and self.deal_closes_at is not None else None,
                       "players": [{"seat": i, "name": p.name if p else f"AI · {'南东北西'[i]}",
                                    "human": p is not None, "connected": bool(p and p.socket),
                                    "auto": self.automated(i)} for i in range(4)
                                   for p in [self.players.get(i)]],
                       "seconds_left": None if self.timeout() is None else
-                          max(0, round(self.timeout() - (time.monotonic() - self.changed)))})
+                          max(0, round(self.timeout() - ((self.paused_at if self.paused_at is not None else time.monotonic()) - self.changed)))})
         return state
 
     def timeout(self):
@@ -219,6 +265,8 @@ class Room:
         return math.ceil(self.turn_seconds * 1.5) if self.game.phase == "burying" else self.turn_seconds
 
     async def broadcast(self):
+        self.sync_presence()
+        self.persist()  # Commit before clients observe a successful state transition.
         async def send(seat, player):
             socket = player.socket
             if socket:
@@ -231,6 +279,36 @@ class Room:
 
 
 rooms: dict[str, Room] = {}
+store: Store | None = None
+
+
+def get_room(code):
+    if code in rooms:
+        return rooms[code]
+    data = store.load_room(code) if store is not None else None
+    if data is None or len(rooms) >= MAX_ROOMS:
+        return None
+    room = Room(code, game=restore_game(data["game"]), host=data["host"],
+                ai_strategy=data["ai_strategy"], turn_seconds=data["turn_seconds"])
+    try:
+        web_strategy(room.ai_strategy)
+    except RuleError:
+        room.ai_strategy = DEFAULT_STRATEGY
+        room.game.log("原 AI 策略当前未开放，已恢复为默认记牌策略。")
+    room.players = {p["seat"]: Player(p["name"], token=p["token"], auto=p["auto"], identity=p["identity"])
+                    for p in data["players"]}
+    clock = data["clock"]
+    now = time.monotonic()
+    room.paused_at = now
+    room.changed = now - clock["elapsed"]
+    room.next_draw_at = now + clock["draw_wait"]
+    room.deal_closes_at = None if clock["close_wait"] is None else now + clock["close_wait"]
+    room.dealing_id, room.closing_bid_count = clock["dealing_id"], clock["closing_bid_count"]
+    room.play_reactions = {(id(room.game), deal, trick, seat): reaction
+                           for deal, trick, seat, reaction in data.get("reactions", [])}
+    rooms[code] = room
+    room.task = asyncio.create_task(run_room(room))
+    return room
 
 
 async def search_ranking(context, strategy, seconds, cancel):
@@ -259,7 +337,7 @@ async def search_hint(room, seat, ws, context, key, strategy, seconds, cancel):
     try:
         result = await search_ranking(context, strategy, seconds, cancel)
         async with room.lock:
-            if (room.search_signature() != key or cancel.is_set()
+            if (room.paused or room.search_signature() != key or cancel.is_set()
                     or room.players.get(seat) is None or room.players[seat].socket is not ws):
                 return
             ranked = result.ranked
@@ -286,13 +364,17 @@ async def run_room(room):
         while rooms.get(room.code) is room:
             await asyncio.sleep(ROOM_TICK)
             async with room.lock:
+                presence_changed = room.sync_presence()
                 connected = any(p.socket for p in room.players.values())
-                if not connected:
+                if room.paused or not connected:
                     room.cancel_search()
                     for cancel, task in room.hint_tasks.values():
                         cancel.set()
                         task.cancel()
-                    if time.monotonic() - room.touched > ROOM_TTL:
+                    if presence_changed:
+                        await room.broadcast()
+                    if not connected and time.monotonic() - room.touched > ROOM_TTL:
+                        room.persist()
                         rooms.pop(room.code, None)
                         return
                     continue  # Pause abandoned rooms instead of burning CPU playing AI rounds.
@@ -370,6 +452,8 @@ async def run_room(room):
 
 @asynccontextmanager
 async def lifespan(app):
+    global store
+    store = Store(database_path())
     yield
     tasks = [r.task for r in rooms.values() if r.task]
     for room in rooms.values():
@@ -381,8 +465,15 @@ async def lifespan(app):
     for task in tasks:
         task.cancel()
     await asyncio.gather(*tasks, return_exceptions=True)
+    for room in rooms.values():
+        for player in room.players.values():
+            player.socket = None
+        room.sync_presence()
+        room.persist()
     rooms.clear()
     shutdown_search()
+    store.close()
+    store = None
 
 
 app = FastAPI(title="升级 · Levelup", lifespan=lifespan)
@@ -393,6 +484,36 @@ app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 class CreateRoom(BaseModel):
     name: str = Field(min_length=1, max_length=20)
     ai_strategy: str = DEFAULT_STRATEGY
+    identity: str | None = Field(default=None, max_length=128)
+
+
+class GuestIdentity(BaseModel):
+    identity: str | None = Field(default=None, max_length=128)
+    name: str | None = Field(default=None, max_length=20)
+
+
+@app.post("/api/identity")
+async def guest_identity(body: GuestIdentity, request: Request):
+    if not same_origin(request.headers.get("origin"), request.headers.get("host")):
+        raise HTTPException(403, "请从游戏页面恢复身份。")
+    try:
+        secret, profile = store.identity(body.identity, body.name.strip() if body.name is not None else None)
+    except RuleError as exc:
+        raise HTTPException(401, str(exc)) from exc
+    from fastapi.responses import JSONResponse
+    return JSONResponse({"identity": secret, "name": profile["name"]}, headers={"Cache-Control": "no-store"})
+
+
+@app.get("/api/me/rooms")
+async def pending_rooms(request: Request):
+    authorization = request.headers.get("authorization", "")
+    try:
+        profile = store.profile(authorization.removeprefix("Bearer ") if authorization.startswith("Bearer ") else None)
+    except RuleError as exc:
+        raise HTTPException(401, str(exc)) from exc
+    from fastapi.responses import JSONResponse
+    return JSONResponse({"name": profile["name"], "rooms": store.pending(profile["identity"])},
+                        headers={"Cache-Control": "no-store"})
 
 
 @app.get("/")
@@ -451,13 +572,21 @@ async def create_room(body: CreateRoom, request: Request):
     if len(rooms) >= MAX_ROOMS:
         raise HTTPException(503, "房间已满，请稍后再试。")
     code = "".join(secrets.choice("ABCDEFGHJKLMNPQRSTUVWXYZ23456789") for _ in range(6))
-    while code in rooms:
+    while code in rooms or store.has_room(code):
         code = "".join(secrets.choice("ABCDEFGHJKLMNPQRSTUVWXYZ23456789") for _ in range(6))
+    try:
+        secret, profile = store.identity(body.identity, name)
+    except RuleError as exc:
+        raise HTTPException(401, str(exc)) from exc
     room = Room(code, ai_strategy=body.ai_strategy)
-    room.players[0] = Player(name)
+    room.players[0] = Player(name, identity=profile["identity"])
     rooms[code] = room
+    room.sync_presence()
+    room.persist()
     room.task = asyncio.create_task(run_room(room))
-    return {"room": code, "token": room.players[0].token}
+    from fastapi.responses import JSONResponse
+    return JSONResponse({"room": code, "token": room.players[0].token, "identity": secret, "name": name},
+                        headers={"Cache-Control": "no-store"})
 
 
 async def error(ws, message):
@@ -466,7 +595,7 @@ async def error(ws, message):
 
 @app.websocket("/ws/{code}")
 async def websocket_room(ws: WebSocket, code: str):
-    room = rooms.get(code.upper())
+    room = None
     seat, player = None, None
     ws = LoggedWebSocket(ws, code.upper(),
                          lambda: room.view(seat) if room is not None and seat is not None else None)
@@ -474,6 +603,7 @@ async def websocket_room(ws: WebSocket, code: str):
         await ws.close(code=1008)
         return
     await ws.accept()
+    room = get_room(code.upper())
     if room is None:
         await error(ws, "房间不存在或已过期，请重新创建。")
         await ws.close(code=4004)
@@ -487,16 +617,27 @@ async def websocket_room(ws: WebSocket, code: str):
         token = hello.get("token")
         if token is not None and (not isinstance(token, str) or len(token) > 128 or not token.isascii()):
             raise RuleError("恢复身份格式错误。")
+        identity = hello.get("identity")
+        profile = store.profile(identity) if identity is not None else None
+        if "name" in hello and (not isinstance(hello["name"], str) or not 1 <= len(hello["name"].strip()) <= 20):
+            raise RuleError("昵称长度须为 1–20 个字符。")
         async with room.lock:
-            if isinstance(token, str) and token:
+            if profile:
+                for i, p in room.players.items():
+                    if p.identity == profile["identity"]:
+                        seat, player = i, p
+                        break
+            if player is None and isinstance(token, str) and token:
                 for i, p in room.players.items():
                     if secrets.compare_digest(p.token, token):
                         seat, player = i, p
                         break
                 if player is None:
                     raise RuleError("恢复身份已失效，请返回大厅重新加入。")
+                if profile and player.identity != profile["identity"]:
+                    raise RuleError("此座位不属于当前访客身份。")
             if player is None:
-                name = hello.get("name", "")
+                name = hello.get("name", profile["name"] if profile else "")
                 if not isinstance(name, str) or not 1 <= len(name.strip()) <= 20:
                     raise RuleError("昵称长度须为 1–20 个字符。")
                 # Human joins are allowed only before dealing, to prevent mid-hand scouting.
@@ -505,18 +646,30 @@ async def websocket_room(ws: WebSocket, code: str):
                 seat = next((i for i in range(4) if i not in room.players), None)
                 if seat is None:
                     raise RuleError("房间已有四位玩家。")
-                player = room.players[seat] = Player(name.strip())
-            was_paused = not any(p.socket for p in room.players.values())
+                if profile is None:
+                    identity, profile = store.identity(name=name.strip())
+                player = room.players[seat] = Player(name.strip(), identity=profile["identity"])
+            if profile is None:
+                # Compatibility with existing per-room recovery tokens: migrate
+                # that authorized seat to a persistent browser identity.
+                identity, profile = store.identity(name=player.name)
+                player.identity = profile["identity"]
+            supplied_name = hello.get("name", player.name)
+            if not isinstance(supplied_name, str) or not 1 <= len(supplied_name.strip()) <= 20:
+                raise RuleError("昵称长度须为 1–20 个字符。")
+            player.name = supplied_name.strip()
+            store.identity(identity, player.name)
             previous = player.socket
             player.socket = ws
-            if was_paused:
-                room.mark()
-                room.sync_deal_clock(time.monotonic(), resume=True)
+            room.sync_presence()
+            room.sync_deal_clock(room.paused_at if room.paused_at is not None else time.monotonic())
             if previous and previous is not ws:
                 await previous.close(code=4001, reason="已在其他连接恢复")
             room.touched = time.monotonic()
             room.game.version += 1
-            await ws.send_json({"type": "welcome", "room": room.code, "seat": seat, "token": player.token})
+            room.persist()
+            await ws.send_json({"type": "welcome", "room": room.code, "seat": seat, "token": player.token,
+                               "identity": identity, "name": player.name})
             await room.broadcast()
         last_action = 0.0
         while True:
@@ -546,6 +699,8 @@ async def websocket_room(ws: WebSocket, code: str):
                     continue
                 last_action = now
                 try:
+                    if room.paused and action not in ("kick", "ai_strategy", "timer", "seat", "auto"):
+                        raise RuleError("牌桌已暂停，需等待所有真人重新加入；房主可移除未归队的玩家。")
                     # A card arriving every 500ms must not invalidate a player's
                     # concurrent bid. Scope such commands to this exact deal;
                     # Game still validates ownership and current bid strength.
@@ -586,7 +741,21 @@ async def websocket_room(ws: WebSocket, code: str):
                                             "alternatives": [r.json() for r in ranked[:3]],
                                             "version": room.game.version, "deal_id": room.game.deal_id})
                         continue
-                    if action == "ai_strategy":
+                    if action == "kick":
+                        if seat != room.host:
+                            raise RuleError("只有原房主可以移除玩家。")
+                        target = message.get("seat")
+                        if type(target) is not int or target == seat or target not in room.players:
+                            raise RuleError("请选择其他真人玩家。")
+                        removed = room.players.pop(target)
+                        previous_socket, removed.socket = removed.socket, None
+                        room.game.version += 1
+                        room.game.log(f"房主移除了 {removed.name}，该座位由 AI 接管。")
+                        room.sync_presence()
+                        room.persist()
+                        if previous_socket:
+                            await previous_socket.close(code=4005, reason="房主已移除该座位")
+                    elif action == "ai_strategy":
                         if seat != room.host:
                             raise RuleError("只有房主可以选择 AI 策略。")
                         if room.game.phase not in ("lobby", "round_end", "match_end"):
@@ -647,8 +816,8 @@ async def websocket_room(ws: WebSocket, code: str):
                                 and room.deal_closes_at is not None and now >= room.deal_closes_at):
                             raise RuleError("最后亮主时间已结束。")
                         room.game.act(seat, action, message.get("ids"))
-                    room.sync_deal_clock(now)
-                    if action != "auto" or seat == room.game.turn:
+                    room.sync_deal_clock(room.paused_at if room.paused_at is not None else now)
+                    if action != "kick" and (action != "auto" or seat == room.game.turn):
                         room.mark()
                     else:
                         room.touched = time.monotonic()
@@ -675,8 +844,6 @@ async def websocket_room(ws: WebSocket, code: str):
                         hint[1].cancel()
                     player.socket = None
                     room.touched = time.monotonic()
-                    # Transfer host controls when someone leaves; the seat itself stays reserved.
-                    if seat == room.host:
-                        room.host = next((i for i, p in room.players.items() if p.socket), seat)
+                    # The starter retains ownership across disconnects/restarts.
                     room.game.version += 1
                     await room.broadcast()

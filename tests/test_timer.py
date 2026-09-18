@@ -43,8 +43,8 @@ def test_timer_host_permissions_validation_and_round_lock(client):
 
 
 @pytest.mark.parametrize('phase', ['burying', 'playing'])
-@pytest.mark.parametrize('automatic', ['auto', 'disconnect'])
-def test_no_timer_never_times_out_but_ai_takeover_still_works(monkeypatch, phase, automatic):
+@pytest.mark.parametrize('automatic', ['auto', 'empty_seat', 'disconnect'])
+def test_no_timer_allows_ai_but_pauses_for_disconnected_humans(monkeypatch, phase, automatic):
     monkeypatch.setattr(server,'ROOM_TICK',.005)
     monkeypatch.setattr(server,'AI_DELAY',0)
 
@@ -67,9 +67,13 @@ def test_no_timer_never_times_out_but_ai_takeover_still_works(monkeypatch, phase
             assert game.version == original
             assert room.view(seat)['seconds_left'] is None
             if automatic == 'auto': room.players[seat].auto = True
+            elif automatic == 'empty_seat': room.players.pop(seat)
             else: room.players[seat].socket = None
             await asyncio.sleep(.03)
-            assert game.version > original
+            if automatic == 'disconnect':
+                assert game.version == original and room.paused
+            else:
+                assert game.version > original
             assert not any('超时' in event for event in game.events)
         finally:
             task.cancel(); await asyncio.gather(task,return_exceptions=True)

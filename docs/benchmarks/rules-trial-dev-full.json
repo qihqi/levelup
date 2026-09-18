@@ -1,0 +1,5163 @@
+{
+  "protocol": "same post-bury deal; swapped teams; baseline bidding/burying; all levels",
+  "seed_start": 1000,
+  "variant": "full",
+  "source_sha256": {
+    "rule_based.py": "84e97f29bb722ce640fb8e2d5837b5b81dcf17aa71b3d4577cf5bcac512a022d",
+    "rule_based_trial.py": "ed627c91c51e50e9636c03800fd5c38a3c7fca2d44fd1ef710d5d0fbaae5f80c",
+    "knowledge.py": "843b8f2fbb163a7c904a8e963585ee82d4ec2d48d3deaac2de40f3afb17d4927",
+    "candidates.py": "2c3f2871e61ac8deb14af4e24022c0022765d84250ae1314c7a271cb9c82297d"
+  },
+  "elapsed_seconds": 50.928549715987174,
+  "seeds": 256,
+  "rounds": 512,
+  "wins": 264,
+  "win_rate": 0.515625,
+  "paired_bootstrap_95_ci": [
+    0.484375,
+    0.546875
+  ],
+  "promotion_gate": {
+    "minimum_seeds": 256,
+    "minimum_win_rate": 0.55,
+    "ci_lower_above": 0.5
+  },
+  "passes_gate": false,
+  "by_role": {
+    "defending": 0.5859375,
+    "attacking": 0.4453125
+  },
+  "mean_signed_points": 1.025390625,
+  "decision_ms": {
+    "baseline": {
+      "median": 2.273675498145167,
+      "p95": 8.883573013008572
+    },
+    "trial": {
+      "median": 3.17519050440751,
+      "p95": 14.573830994777381
+    }
+  },
+  "results": [
+    {
+      "seed": 1000,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1000,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1001,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1001,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1002,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1002,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": -30
+    },
+    {
+      "seed": 1003,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1003,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1004,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1004,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1005,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1005,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 145,
+      "gain": 1,
+      "signed_points": -65
+    },
+    {
+      "seed": 1006,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1006,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1007,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1007,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1008,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": -50
+    },
+    {
+      "seed": 1008,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1009,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 175,
+      "gain": 2,
+      "signed_points": -95
+    },
+    {
+      "seed": 1009,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": 50
+    },
+    {
+      "seed": 1010,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1010,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1011,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1011,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1012,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": -25
+    },
+    {
+      "seed": 1012,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1013,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1013,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 0,
+      "signed_points": -20
+    },
+    {
+      "seed": 1014,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1014,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1015,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1015,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1016,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1016,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1017,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1017,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": -50
+    },
+    {
+      "seed": 1018,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1018,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1019,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 15,
+      "gain": 2,
+      "signed_points": 65
+    },
+    {
+      "seed": 1019,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 0,
+      "gain": 3,
+      "signed_points": -80
+    },
+    {
+      "seed": 1020,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 10,
+      "gain": 2,
+      "signed_points": -70
+    },
+    {
+      "seed": 1020,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 25,
+      "gain": 2,
+      "signed_points": 55
+    },
+    {
+      "seed": 1021,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1021,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1022,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 165,
+      "gain": 2,
+      "signed_points": -85
+    },
+    {
+      "seed": 1022,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 180,
+      "gain": 2,
+      "signed_points": 100
+    },
+    {
+      "seed": 1023,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1023,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1024,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1024,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1025,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1025,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1026,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 0,
+      "signed_points": -20
+    },
+    {
+      "seed": 1026,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1027,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1027,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": 35
+    },
+    {
+      "seed": 1028,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1028,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1029,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1029,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1030,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1030,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1031,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": 50
+    },
+    {
+      "seed": 1031,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": -35
+    },
+    {
+      "seed": 1032,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1032,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": -50
+    },
+    {
+      "seed": 1033,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1033,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1034,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1034,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1035,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": -25
+    },
+    {
+      "seed": 1035,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1036,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1036,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1037,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 155,
+      "gain": 1,
+      "signed_points": -75
+    },
+    {
+      "seed": 1037,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": 35
+    },
+    {
+      "seed": 1038,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 35,
+      "gain": 1,
+      "signed_points": -45
+    },
+    {
+      "seed": 1038,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 15,
+      "gain": 1,
+      "signed_points": 65
+    },
+    {
+      "seed": 1039,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1039,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1040,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1040,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1041,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1041,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 135,
+      "gain": 1,
+      "signed_points": -55
+    },
+    {
+      "seed": 1042,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": -45
+    },
+    {
+      "seed": 1042,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 20,
+      "gain": 2,
+      "signed_points": 60
+    },
+    {
+      "seed": 1043,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1043,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 10,
+      "gain": 2,
+      "signed_points": 70
+    },
+    {
+      "seed": 1044,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1044,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1045,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1045,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": -35
+    },
+    {
+      "seed": 1046,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": -30
+    },
+    {
+      "seed": 1046,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1047,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": -20
+    },
+    {
+      "seed": 1047,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1048,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1048,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1049,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1049,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1050,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 20,
+      "gain": 2,
+      "signed_points": 60
+    },
+    {
+      "seed": 1050,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": -30
+    },
+    {
+      "seed": 1051,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1051,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1052,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 50,
+      "gain": 0,
+      "signed_points": 30
+    },
+    {
+      "seed": 1052,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": 35
+    },
+    {
+      "seed": 1053,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1053,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1054,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1054,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": -30
+    },
+    {
+      "seed": 1055,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": -20
+    },
+    {
+      "seed": 1055,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1056,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1056,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1057,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1057,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1058,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 125,
+      "gain": 1,
+      "signed_points": 45
+    },
+    {
+      "seed": 1058,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": -50
+    },
+    {
+      "seed": 1059,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1059,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1060,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": -50
+    },
+    {
+      "seed": 1060,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": 50
+    },
+    {
+      "seed": 1061,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 20,
+      "gain": 2,
+      "signed_points": 60
+    },
+    {
+      "seed": 1061,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1062,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1062,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1063,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1063,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1064,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1064,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": -25
+    },
+    {
+      "seed": 1065,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 145,
+      "gain": 0,
+      "signed_points": 65
+    },
+    {
+      "seed": 1065,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 155,
+      "gain": 0,
+      "signed_points": -75
+    },
+    {
+      "seed": 1066,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": -30
+    },
+    {
+      "seed": 1066,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": -20
+    },
+    {
+      "seed": 1067,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1067,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1068,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1068,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 145,
+      "gain": 1,
+      "signed_points": 65
+    },
+    {
+      "seed": 1069,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 145,
+      "gain": 1,
+      "signed_points": -65
+    },
+    {
+      "seed": 1069,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 125,
+      "gain": 1,
+      "signed_points": 45
+    },
+    {
+      "seed": 1070,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1070,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1071,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1071,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1072,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1072,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1073,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 25,
+      "gain": 2,
+      "signed_points": 55
+    },
+    {
+      "seed": 1073,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1074,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1074,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1075,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": 30
+    },
+    {
+      "seed": 1075,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": 30
+    },
+    {
+      "seed": 1076,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1076,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1077,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 25,
+      "gain": 1,
+      "signed_points": 55
+    },
+    {
+      "seed": 1077,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1078,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 0,
+      "signed_points": -30
+    },
+    {
+      "seed": 1078,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 25,
+      "gain": 0,
+      "signed_points": 55
+    },
+    {
+      "seed": 1079,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1079,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1080,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1080,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1081,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1081,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1082,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": 50
+    },
+    {
+      "seed": 1082,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1083,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1083,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1084,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": -25
+    },
+    {
+      "seed": 1084,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1085,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": -30
+    },
+    {
+      "seed": 1085,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1086,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1086,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 125,
+      "gain": 1,
+      "signed_points": -45
+    },
+    {
+      "seed": 1087,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1087,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1088,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1088,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1089,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1089,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1090,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 140,
+      "gain": 1,
+      "signed_points": -60
+    },
+    {
+      "seed": 1090,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1091,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 125,
+      "gain": 0,
+      "signed_points": 45
+    },
+    {
+      "seed": 1091,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": -25
+    },
+    {
+      "seed": 1092,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1092,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1093,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1093,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 15,
+      "gain": 2,
+      "signed_points": 65
+    },
+    {
+      "seed": 1094,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1094,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": -35
+    },
+    {
+      "seed": 1095,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1095,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1096,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 145,
+      "gain": 1,
+      "signed_points": -65
+    },
+    {
+      "seed": 1096,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": -50
+    },
+    {
+      "seed": 1097,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 295,
+      "gain": 5,
+      "signed_points": -215
+    },
+    {
+      "seed": 1097,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1098,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1098,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 10,
+      "gain": 2,
+      "signed_points": -70
+    },
+    {
+      "seed": 1099,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1099,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1100,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1100,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1101,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1101,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1102,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1102,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": -30
+    },
+    {
+      "seed": 1103,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 20,
+      "gain": 1,
+      "signed_points": 60
+    },
+    {
+      "seed": 1103,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 30,
+      "gain": 1,
+      "signed_points": -50
+    },
+    {
+      "seed": 1104,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 0,
+      "signed_points": -35
+    },
+    {
+      "seed": 1104,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1105,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 135,
+      "gain": 1,
+      "signed_points": 55
+    },
+    {
+      "seed": 1105,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1106,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1106,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1107,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1107,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1108,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": 50
+    },
+    {
+      "seed": 1108,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": -20
+    },
+    {
+      "seed": 1109,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": 50
+    },
+    {
+      "seed": 1109,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 20,
+      "gain": 2,
+      "signed_points": -60
+    },
+    {
+      "seed": 1110,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1110,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1111,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": 30
+    },
+    {
+      "seed": 1111,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1112,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": -20
+    },
+    {
+      "seed": 1112,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 140,
+      "gain": 1,
+      "signed_points": 60
+    },
+    {
+      "seed": 1113,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1113,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1114,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": -25
+    },
+    {
+      "seed": 1114,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1115,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1115,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1116,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": -25
+    },
+    {
+      "seed": 1116,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1117,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1117,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1118,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1118,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1119,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1119,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1120,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1120,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": -45
+    },
+    {
+      "seed": 1121,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1121,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1122,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1122,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 145,
+      "gain": 1,
+      "signed_points": 65
+    },
+    {
+      "seed": 1123,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": -30
+    },
+    {
+      "seed": 1123,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1124,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1124,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1125,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1125,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1126,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": 50
+    },
+    {
+      "seed": 1126,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 15,
+      "gain": 2,
+      "signed_points": -65
+    },
+    {
+      "seed": 1127,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1127,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1128,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 5,
+      "gain": 2,
+      "signed_points": -75
+    },
+    {
+      "seed": 1128,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1129,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1129,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1130,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 130,
+      "gain": 0,
+      "signed_points": 50
+    },
+    {
+      "seed": 1130,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1131,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1131,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1132,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 25,
+      "gain": 2,
+      "signed_points": -55
+    },
+    {
+      "seed": 1132,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1133,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": -50
+    },
+    {
+      "seed": 1133,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 135,
+      "gain": 1,
+      "signed_points": 55
+    },
+    {
+      "seed": 1134,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1134,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1135,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 150,
+      "gain": 1,
+      "signed_points": -70
+    },
+    {
+      "seed": 1135,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 140,
+      "gain": 1,
+      "signed_points": 60
+    },
+    {
+      "seed": 1136,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1136,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1137,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1137,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1138,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": -30
+    },
+    {
+      "seed": 1138,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1139,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1139,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1140,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1140,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1141,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1141,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1142,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": -30
+    },
+    {
+      "seed": 1142,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1143,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1143,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1144,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": -30
+    },
+    {
+      "seed": 1144,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1145,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1145,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1146,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1146,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1147,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1147,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1148,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": -30
+    },
+    {
+      "seed": 1148,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 15,
+      "gain": 2,
+      "signed_points": 65
+    },
+    {
+      "seed": 1149,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": -30
+    },
+    {
+      "seed": 1149,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1150,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 20,
+      "gain": 2,
+      "signed_points": -60
+    },
+    {
+      "seed": 1150,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1151,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1151,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1152,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1152,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1153,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": 30
+    },
+    {
+      "seed": 1153,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1154,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1154,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": 50
+    },
+    {
+      "seed": 1155,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1155,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 140,
+      "gain": 1,
+      "signed_points": -60
+    },
+    {
+      "seed": 1156,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 10,
+      "gain": 0,
+      "signed_points": 70
+    },
+    {
+      "seed": 1156,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 20,
+      "gain": 0,
+      "signed_points": -60
+    },
+    {
+      "seed": 1157,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1157,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1158,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1158,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1159,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1159,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": -35
+    },
+    {
+      "seed": 1160,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1160,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1161,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1161,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1162,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1162,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": -50
+    },
+    {
+      "seed": 1163,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1163,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": -30
+    },
+    {
+      "seed": 1164,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1164,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1165,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": 30
+    },
+    {
+      "seed": 1165,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": -30
+    },
+    {
+      "seed": 1166,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1166,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 20,
+      "gain": 2,
+      "signed_points": 60
+    },
+    {
+      "seed": 1167,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1167,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1168,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 155,
+      "gain": 1,
+      "signed_points": 75
+    },
+    {
+      "seed": 1168,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 140,
+      "gain": 1,
+      "signed_points": -60
+    },
+    {
+      "seed": 1169,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 135,
+      "gain": 0,
+      "signed_points": 55
+    },
+    {
+      "seed": 1169,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 135,
+      "gain": 0,
+      "signed_points": -55
+    },
+    {
+      "seed": 1170,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1170,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1171,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1171,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1172,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": -45
+    },
+    {
+      "seed": 1172,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1173,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1173,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1174,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1174,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1175,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 0,
+      "gain": 3,
+      "signed_points": -80
+    },
+    {
+      "seed": 1175,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 0,
+      "gain": 3,
+      "signed_points": 80
+    },
+    {
+      "seed": 1176,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1176,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 0,
+      "gain": 3,
+      "signed_points": -80
+    },
+    {
+      "seed": 1177,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1177,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1178,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": 30
+    },
+    {
+      "seed": 1178,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1179,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1179,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1180,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1180,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": -50
+    },
+    {
+      "seed": 1181,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": 35
+    },
+    {
+      "seed": 1181,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1182,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1182,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1183,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1183,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 155,
+      "gain": 1,
+      "signed_points": -75
+    },
+    {
+      "seed": 1184,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1184,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1185,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1185,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1186,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1186,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": 30
+    },
+    {
+      "seed": 1187,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": -45
+    },
+    {
+      "seed": 1187,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1188,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1188,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1189,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1189,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1190,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 0,
+      "gain": 3,
+      "signed_points": 80
+    },
+    {
+      "seed": 1190,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": -50
+    },
+    {
+      "seed": 1191,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1191,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1192,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1192,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1193,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1193,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1194,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1194,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1195,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": -25
+    },
+    {
+      "seed": 1195,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1196,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1196,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1197,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 135,
+      "gain": 1,
+      "signed_points": -55
+    },
+    {
+      "seed": 1197,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 150,
+      "gain": 1,
+      "signed_points": 70
+    },
+    {
+      "seed": 1198,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": 25
+    },
+    {
+      "seed": 1198,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": -30
+    },
+    {
+      "seed": 1199,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    },
+    {
+      "seed": 1199,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": 35
+    },
+    {
+      "seed": 1200,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1200,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": -45
+    },
+    {
+      "seed": 1201,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1201,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 140,
+      "gain": 1,
+      "signed_points": -60
+    },
+    {
+      "seed": 1202,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 150,
+      "gain": 1,
+      "signed_points": 70
+    },
+    {
+      "seed": 1202,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1203,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1203,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1204,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 25,
+      "gain": 2,
+      "signed_points": 55
+    },
+    {
+      "seed": 1204,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 25,
+      "gain": 2,
+      "signed_points": -55
+    },
+    {
+      "seed": 1205,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 125,
+      "gain": 1,
+      "signed_points": 45
+    },
+    {
+      "seed": 1205,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1206,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1206,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1207,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1207,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": -35
+    },
+    {
+      "seed": 1208,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1208,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 10,
+      "gain": 0,
+      "signed_points": 70
+    },
+    {
+      "seed": 1209,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": 50
+    },
+    {
+      "seed": 1209,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 145,
+      "gain": 1,
+      "signed_points": -65
+    },
+    {
+      "seed": 1210,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1210,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1211,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1211,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1212,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": -50
+    },
+    {
+      "seed": 1212,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": 50
+    },
+    {
+      "seed": 1213,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1213,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1214,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 50,
+      "gain": 1,
+      "signed_points": 30
+    },
+    {
+      "seed": 1214,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1215,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1215,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": -20
+    },
+    {
+      "seed": 1216,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 10,
+      "gain": 2,
+      "signed_points": -70
+    },
+    {
+      "seed": 1216,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 10,
+      "gain": 2,
+      "signed_points": 70
+    },
+    {
+      "seed": 1217,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1217,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": -30
+    },
+    {
+      "seed": 1218,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1218,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1219,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1219,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": -35
+    },
+    {
+      "seed": 1220,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": -20
+    },
+    {
+      "seed": 1220,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1221,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 125,
+      "gain": 0,
+      "signed_points": 45
+    },
+    {
+      "seed": 1221,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": -20
+    },
+    {
+      "seed": 1222,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 0,
+      "gain": 3,
+      "signed_points": -80
+    },
+    {
+      "seed": 1222,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 20,
+      "gain": 2,
+      "signed_points": 60
+    },
+    {
+      "seed": 1223,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 170,
+      "gain": 2,
+      "signed_points": 90
+    },
+    {
+      "seed": 1223,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": 40
+    },
+    {
+      "seed": 1224,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": 50
+    },
+    {
+      "seed": 1224,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": -50
+    },
+    {
+      "seed": 1225,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1225,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": -50
+    },
+    {
+      "seed": 1226,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": -25
+    },
+    {
+      "seed": 1226,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 25,
+      "gain": 2,
+      "signed_points": 55
+    },
+    {
+      "seed": 1227,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1227,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1228,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1228,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1229,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 10,
+      "gain": 2,
+      "signed_points": -70
+    },
+    {
+      "seed": 1229,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 55,
+      "gain": 1,
+      "signed_points": 25
+    },
+    {
+      "seed": 1230,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": 50
+    },
+    {
+      "seed": 1230,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 20,
+      "gain": 2,
+      "signed_points": -60
+    },
+    {
+      "seed": 1231,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": -5
+    },
+    {
+      "seed": 1231,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1232,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 125,
+      "gain": 1,
+      "signed_points": 45
+    },
+    {
+      "seed": 1232,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1233,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1233,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1234,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1234,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 145,
+      "gain": 0,
+      "signed_points": 65
+    },
+    {
+      "seed": 1235,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": 50
+    },
+    {
+      "seed": 1235,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1236,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1236,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1237,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1237,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1238,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 85,
+      "gain": 0,
+      "signed_points": 5
+    },
+    {
+      "seed": 1238,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1239,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1239,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1240,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 110,
+      "gain": 0,
+      "signed_points": 30
+    },
+    {
+      "seed": 1240,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1241,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": -15
+    },
+    {
+      "seed": 1241,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1242,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": 5
+    },
+    {
+      "seed": 1242,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 130,
+      "gain": 1,
+      "signed_points": 50
+    },
+    {
+      "seed": 1243,
+      "level": 10,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1243,
+      "level": 10,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1244,
+      "level": 11,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 40,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1244,
+      "level": 11,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 30,
+      "gain": 2,
+      "signed_points": 50
+    },
+    {
+      "seed": 1245,
+      "level": 12,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 75,
+      "gain": 1,
+      "signed_points": -5
+    },
+    {
+      "seed": 1245,
+      "level": 12,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1246,
+      "level": 13,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 60,
+      "gain": 1,
+      "signed_points": 20
+    },
+    {
+      "seed": 1246,
+      "level": 13,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 80,
+      "gain": 0,
+      "signed_points": 0
+    },
+    {
+      "seed": 1247,
+      "level": 14,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 0,
+      "signed_points": -10
+    },
+    {
+      "seed": 1247,
+      "level": 14,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 45,
+      "gain": 0,
+      "signed_points": 35
+    },
+    {
+      "seed": 1248,
+      "level": 2,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": 15
+    },
+    {
+      "seed": 1248,
+      "level": 2,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 120,
+      "gain": 1,
+      "signed_points": -40
+    },
+    {
+      "seed": 1249,
+      "level": 3,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 115,
+      "gain": 0,
+      "signed_points": 35
+    },
+    {
+      "seed": 1249,
+      "level": 3,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 95,
+      "gain": 0,
+      "signed_points": -15
+    },
+    {
+      "seed": 1250,
+      "level": 4,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 25,
+      "gain": 2,
+      "signed_points": 55
+    },
+    {
+      "seed": 1250,
+      "level": 4,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 20,
+      "gain": 2,
+      "signed_points": -60
+    },
+    {
+      "seed": 1251,
+      "level": 5,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1251,
+      "level": 5,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": -10
+    },
+    {
+      "seed": 1252,
+      "level": 6,
+      "trial_team": 0,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1252,
+      "level": 6,
+      "trial_team": 1,
+      "trial_defending": true,
+      "trial_won": false,
+      "attacker_score": 105,
+      "gain": 0,
+      "signed_points": -25
+    },
+    {
+      "seed": 1253,
+      "level": 7,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 70,
+      "gain": 1,
+      "signed_points": 10
+    },
+    {
+      "seed": 1253,
+      "level": 7,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 100,
+      "gain": 0,
+      "signed_points": 20
+    },
+    {
+      "seed": 1254,
+      "level": 8,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 65,
+      "gain": 1,
+      "signed_points": 15
+    },
+    {
+      "seed": 1254,
+      "level": 8,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": true,
+      "attacker_score": 90,
+      "gain": 0,
+      "signed_points": 10
+    },
+    {
+      "seed": 1255,
+      "level": 9,
+      "trial_team": 0,
+      "trial_defending": true,
+      "trial_won": true,
+      "attacker_score": 35,
+      "gain": 2,
+      "signed_points": 45
+    },
+    {
+      "seed": 1255,
+      "level": 9,
+      "trial_team": 1,
+      "trial_defending": false,
+      "trial_won": false,
+      "attacker_score": 45,
+      "gain": 1,
+      "signed_points": -35
+    }
+  ]
+}

@@ -323,14 +323,37 @@ class Game:
     def bid_value(self, cards):
         return bid_value(cards, self.level)
 
-    def declare(self, seat, ids):
-        cards = self.get_cards(seat, ids)
+    def validate_bid(self, seat, cards):
+        """Validate strength and self-reinforcement without changing the game."""
         value, trump = self.bid_value(cards)
         if self.bid:
             if value <= self.bid["value"]:
                 raise RuleError("反主必须更强：单级牌 < 对级牌 < 对小王 < 对大王。")
             if self.bid["seat"] == seat and not (trump == self.trump and value == 2):
                 raise RuleError("不能反自己，只能用同花色的一对级牌加固。")
+        return value, trump
+
+    def bid_skip_reason(self, seat):
+        """Why final confirmation is unnecessary; drawing must finish first."""
+        if self.phase != "dealing" or self.draw_pile:
+            return None
+        if self.bid and self.bid["seat"] == seat:
+            return "own_bid"
+        groups = defaultdict(list)
+        for card in self.hands[seat]:
+            groups[card.key].append(card)
+        for cards in groups.values():
+            for size in range(1, min(2, len(cards)) + 1):
+                try:
+                    self.validate_bid(seat, cards[:size])
+                except RuleError:
+                    continue
+                return None
+        return "no_legal_bid"
+
+    def declare(self, seat, ids):
+        cards = self.get_cards(seat, ids)
+        value, trump = self.validate_bid(seat, cards)
         self.bid = {"seat": seat, "value": value, "cards": [c.json() for c in cards]}
         self.trump = trump
         self.declarations.append(self.bid)
@@ -477,6 +500,7 @@ class Game:
                 "trump": self.trump, "dealer": self.dealer, "turn": self.turn,
                 "bid": self.bid, "hand": hand,
                 "bid_revision": len(self.declarations), "bid_passed": sorted(self.bid_passed),
+                "bid_skip_reason": self.bid_skip_reason(seat),
                 "deal_id": self.deal_id, "dealt": self.dealt, "deal_total": 100,
                 "last_draw_seat": self.last_draw_seat,
                 "counts": [len(h) for h in self.hands], "score": self.score,

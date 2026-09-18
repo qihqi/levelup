@@ -7,6 +7,11 @@ from levelup import ws_logging
 
 
 @pytest.fixture(autouse=True)
+def isolated_database(tmp_path, monkeypatch):
+    monkeypatch.setenv("LEVELUP_DB_PATH", str(tmp_path / "state.sqlite3"))
+
+
+@pytest.fixture(autouse=True)
 def room_creation_capacity_for_tests(monkeypatch):
     # Independent tests share one ASGI app/peer; security tests override this limit.
     from levelup import security

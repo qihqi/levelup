@@ -21,6 +21,21 @@ public internet exposes game creation, AI use, and resource consumption to visit
 - If a real credential is ever committed, revoke/rotate it first, then remove it
   from all Git history. Deleting it in a later commit is insufficient.
 
+## Guest identities and saved games
+
+Guest identity secrets and names live in browser localStorage. Treat the identity
+as a bearer credential: it can list that guest's pending tables and recover their
+seats. The server stores only its SHA-256 hash; HTTP requests use Authorization
+headers, WebSocket hello messages carry the secret, and communication logs redact
+it. Keep the existing CSP and serve over HTTPS. Clearing browser storage loses
+automatic access; nicknames and room codes are not recovery credentials.
+
+SQLite snapshots contain all private hands, buried cards, and per-room reconnect
+tokens. New database files use `0600` and new data directories use `0700`.
+Database files are ignored by Git. Keep the database and backups outside static
+roots and public artifacts; no automatic database retention cleanup is currently
+implemented. See [persistence setup and backups](docs/PERSISTENCE.md).
+
 ## Hosting
 
 For local-only play, bind to loopback:
@@ -36,8 +51,9 @@ Use a single application worker. Forward WebSocket upgrades and preserve the
 public Host/Origin. Trust forwarded client IP headers only from that proxy.
 
 There is no application account system, admission password, or total API spending
-cap. A room code admits new players before dealing; a reconnect token identifies
-a seat. Neither is a service-wide authorization mechanism. Same-origin checks
+cap. A room code admits new players before dealing; guest identities recover
+existing seats, with legacy reconnect-token support. Neither is a service-wide
+authorization mechanism. Same-origin checks
 block cross-site browser requests but do not authenticate native clients or
 protect against DNS rebinding to an unrestricted hostname.
 
@@ -49,16 +65,18 @@ LEVELUP_WEB_AI_STRATEGIES=rule_based ./run.sh --host 127.0.0.1 --port 8768
 ```
 
 `LEVELUP_WEB_AI_STRATEGIES` is a comma-separated allowlist enforced on room creation
-and strategy changes, including direct requests. The default rule strategy always
-remains available. If unset, all registered strategies remain available to the
+and strategy changes, including direct requests. Restored rooms fall back to the
+default strategy if their saved strategy is no longer allowed. The default rule
+strategy always remains available. If unset, all registered strategies remain available to the
 server; the UI separately hides the basic/XGBoost comparison policies. This setting
 does not restrict offline simulations. Restart to apply deployment configuration.
 
-The application limits room creation to 10/minute per client IP, WebSocket messages
-to 16 KiB and 20 JSON nesting levels, and traffic to 10 messages/second with a burst
+The application limits room creation and identity updates to a combined 10/minute
+per client IP, WebSocket messages to 16 KiB and 20 JSON nesting levels,
+and traffic to 10 messages/second with a burst
 of 40. Malformed messages and ping messages count toward this limit. Room creation
-bodies are limited to 8 KiB/10 seconds. A player gets at most one slow AI hint per
-turn, including reconnects. These controls reduce abuse; they do not replace proxy
+and identity-update bodies are limited to 8 KiB/10 seconds. A player gets at most
+one slow AI hint per turn, including reconnects. These controls reduce abuse; they do not replace proxy
 connection limits, authentication, resource quotas, or API spending controls.
 
 Use the pinned `requirements.txt` for the tested web dependencies. The optional

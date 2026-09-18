@@ -46,7 +46,7 @@ function client(search = '', preferences = new Map()) {
   });
   vm.runInContext(readFileSync(new URL('../static/app.js', `file://${__filename}`), 'utf8'), context);
   const run = js => vm.runInContext(js, context);
-  element('name').value = 'Tester';
+  if (!element('name').value) element('name').value = 'Tester';
   return {run, element, timers, sockets, storage, preferences, location, context};
 }
 
@@ -71,6 +71,57 @@ test('missing room resets a previous game, enables creation, clears stale URL an
   assert.equal(c.run('handFingerprint'), '');
   assert.match(c.element('room-error').textContent, /HJQY9Q.*完整邀请链接.*创建房间/);
   assert.equal(c.element('room-error').hidden, false);
+});
+
+test('guest identity and nickname survive a fresh page and authenticate room connections', () => {
+  const preferences = new Map();
+  const first = client('', preferences);
+  first.run("roomCode='ABCDEF';connect()");
+  first.sockets[0].message({type:'welcome',token:'room-token',identity:'persistent-guest',name:'小南'});
+  assert.equal(preferences.get('levelup:identity'), 'persistent-guest');
+  assert.equal(preferences.get('levelup:name'), '小南');
+  const second = client('', preferences);
+  assert.equal(second.element('name').value, '小南');
+  second.run("roomCode='ABCDEF';connect()");
+  let hello;
+  second.sockets[0].send = raw => { hello = JSON.parse(raw); };
+  second.sockets[0].onopen();
+  assert.equal(hello.identity, 'persistent-guest');
+  assert.equal(hello.name, '小南');
+  assert.equal(second.sockets[0].url.includes('persistent-guest'), false);
+});
+
+test('pending table list resumes the selected room without exposing identity in its URL', () => {
+  const c = client('', new Map([['levelup:identity', 'saved-guest']]));
+  c.run("renderPendingGames([{room:'SAVEAB',phase:'playing',round:3,players:[{name:'南'},{name:'东'}]}])");
+  const row = c.element('pending-list').children[0];
+  assert.equal(row.children[0].children[0].textContent, 'SAVEAB');
+  row.children[1].onclick();
+  assert.match(c.sockets[0].url, /\/ws\/SAVEAB$/);
+  assert.equal(c.run('identity'), 'saved-guest');
+});
+
+test('paused table disables actions and cancels automatic forced play', () => {
+  const c = client();
+  c.run("state={phase:'playing',seat:0,host:0,turn:0,paused:true,trick:[],hand:[],play_options:{forced:[1]}};socket={readyState:1};selected=new Set([1]);updateActions()");
+  assert.equal(c.element('play').disabled, true);
+  assert.equal(c.element('hint').disabled, true);
+  assert.equal(c.run('forcedPlayKey()'), '');
+  assert.match(c.element('turn-message').textContent, /暂停/);
+});
+
+test('only the starter gets removal controls and a kicked connection returns to the lobby', () => {
+  const c = client();
+  c.run("state={seat:0,host:0,players:[{seat:0,name:'南',human:true,connected:true},{seat:1,name:'东',human:true,connected:false}]};socket={readyState:1};renderPlayerManager()");
+  assert.equal(c.element('manage-players').hidden, false);
+  assert.equal(c.element('players-list').children[1].children[1].textContent, '移除 · AI 接管');
+  c.run('state.seat=1;renderPlayerManager()');
+  assert.equal(c.element('manage-players').hidden, true);
+  assert.equal(c.element('players-list').children[0].children.length, 1);
+  c.run("roomCode='ABCDEF';connect()");
+  c.sockets[0].onclose({code:4005});
+  assert.equal(c.run('state'), null);
+  assert.match(c.element('room-error').textContent, /移出牌桌/);
 });
 
 test('an already-started room gives a persistent explanation and a usable lobby', () => {
@@ -236,6 +287,25 @@ test('dealer gets 不改主 before receiving bottom, including first-round provi
   assert.equal(c.element('pass-bid').disabled, true);
   c.run('state.round=1;state.bid=null;state.bid_passed=[];updateActions()');
   assert.equal(c.element('pass-bid').textContent, '不亮');
+});
+
+test('final bidding skips unnecessary confirmation and restores it for a legal counterbid', () => {
+  const c = client();
+  c.run("state={phase:'dealing',seat:0,host:0,turn:0,bid_passed:[0],deal_closing:true,bid_skip_reason:'own_bid'};socket={readyState:1};selected=new Set([0]);updateActions()");
+  assert.equal(c.element('pass-bid').hidden, true);
+  assert.equal(c.element('play').disabled, true);
+  assert.equal(c.element('hint').disabled, true);
+  assert.match(c.element('turn-message').textContent, /由你亮出.*无需确认/);
+  c.run("state.bid_skip_reason='no_legal_bid';updateActions()");
+  assert.match(c.element('turn-message').textContent, /没有可亮主.*无需确认/);
+  c.run('state.bid_skip_reason=null;state.bid_passed=[];updateActions()');
+  assert.equal(c.element('pass-bid').hidden, false);
+  assert.equal(c.element('pass-bid').disabled, false);
+  assert.equal(c.element('play').disabled, false);
+  assert.equal(c.element('hint').disabled, false);
+  c.run("state.deal_closing=false;state.bid_skip_reason='own_bid';updateActions()");
+  assert.equal(c.element('play').disabled, false);
+  assert.match(c.element('turn-message').textContent, /摸牌中/);
 });
 
 test('follow prompt uses the actual leader and effective suit, including level cards', () => {

@@ -48,7 +48,7 @@ def configure():
 def redact(value):
     if isinstance(value, dict):
         return {key: "[REDACTED]" if re.sub(r"[^a-z0-9]", "", key.lower()) in
-                {"token", "authorization", "cookie", "password", "secret", "apikey", "openaiapikey",
+                {"token", "identity", "authorization", "cookie", "password", "secret", "apikey", "openaiapikey",
                  "accesstoken", "refreshtoken", "clientsecret", "setcookie", "proxyauthorization"} else redact(item)
                 for key, item in value.items()}
     if isinstance(value, list):

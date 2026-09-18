@@ -7,8 +7,8 @@
   <meta name="description" content="四人双副牌升级。邀请朋友，或与 AI 同桌，对家配合，从 2 打到 A。">
   <title>升级 · LEVELUP</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23102e29'/%3E%3Ctext x='32' y='48' text-anchor='middle' font-size='48' fill='%23e2c487'%3E♠%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="/static/style.css?v=20260912-drawing-selection-2">
-  <script defer src="/static/app.js?v=20260912-ai-menu"></script>
+  <link rel="stylesheet" href="/static/style.css?v=20260918-persistence">
+  <script defer src="/static/app.js?v=20260918-persistence"></script>
 </head>
 <body>
   <header class="topbar">
@@ -16,9 +16,10 @@
     <div class="header-actions"><span id="connection" class="connection">双副牌 · 四人对家</span><button id="cancel-connect" class="quiet" hidden>取消连接</button><button id="info-button" class="quiet" hidden>牌局信息</button><button id="rules-button" class="quiet">玩法说明 <span>?</span></button></div>
   </header>
   <main>
-    <section class="game-heading"><div><span class="eyebrow">双副牌 / TRACTOR</span><h1 id="page-title">好牌，和朋友一起打。</h1></div><div id="room-tools" hidden><button id="copy-room" class="quiet">房间 <strong id="room-code"></strong> · 复制邀请</button><button id="leave" class="quiet">返回大厅</button></div></section>
+    <section class="game-heading"><div><span class="eyebrow">双副牌 / TRACTOR</span><h1 id="page-title">好牌，和朋友一起打。</h1></div><div id="room-tools" hidden><button id="copy-room" class="quiet">房间 <strong id="room-code"></strong> · 复制邀请</button><button id="manage-players" class="quiet" hidden>管理玩家</button><button id="leave" class="quiet">返回大厅</button></div></section>
     <div class="workspace">
       <section class="play-column" aria-label="牌桌">
+        <div id="pause-banner" class="pause-banner" role="status" hidden><strong id="pause-message"></strong><span>所有真人归队后自动继续。房主可通过「管理玩家」移除玩家，由 AI 接管。</span></div>
         <div id="mobile-status" class="mobile-status" hidden></div>
         <div class="table" id="table">
           <div class="table-border" aria-hidden="true"></div>
@@ -36,6 +37,7 @@
               <div class="join-row"><input id="join-code" maxlength="6" placeholder="输入 6 位房间号" aria-label="房间号" autocapitalize="characters" autocomplete="off"><button id="join" type="button" class="secondary">加入</button></div>
             </form>
             <p class="lobby-note">创建后可直接与 AI 开局，或邀请朋友入座。</p>
+            <section id="pending-games" class="pending-games" hidden><div class="pending-heading"><strong>我的未完成牌桌</strong><button id="refresh-pending" type="button" class="quiet">刷新</button></div><p id="pending-status"></p><div id="pending-list"></div><small>访客身份和昵称保存在本浏览器。清除网站数据后将无法自动找回。</small></section>
           </section>
           <section id="waiting" class="waiting-panel" hidden></section>
           <section id="trick-area" class="trick-area" hidden aria-label="本墩出牌"></section>
@@ -50,7 +52,7 @@
       </section>
       <aside class="sidebar">
         <section class="score-panel"><div class="panel-label">牌局记分 <span id="round-label">等待开局</span></div><div class="teams"><div><span class="team-dot jade"></span> 南北队 <strong id="level-0">2</strong></div><span class="versus">VS</span><div><span class="team-dot gold"></span> 东西队 <strong id="level-1">2</strong></div></div><div class="score-title"><span>闲家得分</span><strong><span id="score">0</span><small> / 80</small></strong></div><div class="meter" role="progressbar" aria-label="闲家得分" aria-valuemin="0" aria-valuemax="80" aria-valuenow="0"><span id="score-fill"></span></div><p class="muted" id="score-note">拿到 80 分，换你上庄。</p><div class="round-facts"><div><span>当前级牌</span><strong id="current-level">2</strong></div><div><span>主牌花色</span><strong id="current-trump">待亮主</strong></div></div></section>
-        <section id="ai-panel" class="ai-panel" hidden><label for="room-ai" class="panel-label">本桌 AI 策略</label><select id="room-ai" aria-label="本桌 AI 策略"></select><p id="ai-description" class="muted"></p><p class="muted">房主可在开局前或局间切换。AI 补位、托管与提示使用同一策略。</p><div id="timer-settings" hidden><label for="room-timer" class="panel-label">操作时限</label><select id="room-timer" aria-label="本桌操作时限"></select><p class="muted">不限时会关闭出牌与扣底倒计时。摸牌节奏和最后亮主窗口保持不变；AI、托管和断线接管仍会自动出牌。</p></div></section>
+        <section id="ai-panel" class="ai-panel" hidden><label for="room-ai" class="panel-label">本桌 AI 策略</label><select id="room-ai" aria-label="本桌 AI 策略"></select><p id="ai-description" class="muted"></p><p class="muted">房主可在开局前或局间切换。AI 补位、托管与提示使用同一策略。</p><div id="timer-settings" hidden><label for="room-timer" class="panel-label">操作时限</label><select id="room-timer" aria-label="本桌操作时限"></select><p class="muted">不限时会关闭出牌与扣底倒计时。摸牌节奏和最后亮主窗口保持不变；AI 与主动托管仍会自动出牌；任何真人离线都会暂停整桌。</p></div></section>
         <section class="tips-panel"><span class="eyebrow">一桌小约定</span><p>对家同队，先跟花色。<br>有对跟对，有拖拉机跟拖拉机。</p><div class="point-cards"><span>5 <small>5 分</small></span><span>10 <small>10 分</small></span><span>K <small>10 分</small></span></div><p class="muted">分牌共 200 分，末墩赢牌可抠底。</p></section>
         <section id="log-panel" class="log-panel"><div class="panel-label">牌桌动态 <span class="live-dot"></span></div><ol id="events"><li>等一位朋友，也可以现在开局。</li></ol></section>
       </aside>
@@ -58,8 +60,9 @@
     <footer>从 2 出发，一路升级。<span>南北同队 · 东西同队</span></footer>
   </main>
   <div id="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="players-dialog"><div class="dialog-header"><h2>管理玩家</h2><button class="quiet close-dialog" aria-label="关闭">✕</button></div><p>移除后由 AI 接管该座位，玩家将不再出现在本桌成员中。</p><div id="players-list"></div></dialog>
   <dialog id="info-dialog"><div class="dialog-header"><h2>牌局信息</h2><button class="quiet close-dialog" aria-label="关闭">✕</button></div><div id="info-content"></div></dialog>
-  <dialog id="rules-dialog"><div class="dialog-header"><div><span class="eyebrow">桌规 / HOUSE RULES</span><h2>双副牌升级</h2></div><button class="quiet close-dialog" aria-label="关闭">✕</button></div><div class="rules-content"><p>四人对家组队，南北一队、东西一队。两副含大小王的扑克牌共 108 张；每人 25 张，留 8 张底牌。双方从 2 打起，坐庄打过 A 获胜。</p><h3>亮主与扣底</h3><p>本桌从庄家位置起按逆时针顺序摸牌，每 0.5 秒全桌摸一张，每人最终 25 张。摸牌期间，任何玩家都可用已经摸到的牌随时亮主或反主，无需等待轮次。强度：单张级牌 ＜ 同花色一对级牌 ＜ 一对小王 ＜ 一对大王；王对为无主。摸完后保留 60 秒亮主机会，庄家可点击「不改主」，其他玩家可点击「不亮」；全员确认则提前定主，否则等待倒计时结束。定主前不向庄家发放底牌。有人亮主或反主后重新计时，并清除之前的不亮确认。只可用同花色对子加固自己。首局最后亮主者坐庄；首局无人亮主重新摸牌，后续局无人亮主翻底定花色。庄家收取底牌并扣回任意 8 张。</p><h3>出牌与跟牌</h3><p>庄家先出，之后由上一墩赢家领出，按南→东→北→西的逆时针顺序。主牌包括主花色、所有级牌及大小王；无主时仅级牌与王为主牌。可出同门单张、对子、拖拉机或甩牌。对子必须花色点数完全相同。拖拉机是相邻等级的连续对子；跳过级牌后的普通牌仍相邻，不同副级牌等大，不能互连。</p><p>跟牌须同张数，先跟足领出花色。有拖拉机须跟；不足时按领出组合从长到短，优先最长可跟连对，再跟剩余对子，最后单张。缺门可垫牌；完全缺门且主牌组合匹配才能毙牌。等大的牌先出为大。</p><p>甩牌要求其余三家均无同门更大的相应组合。失败时自动出张数最少、再按大小最小的失败组合，本桌不罚分。成功甩牌只能被匹配组合的主牌毙；超毙比较最大组合。</p><h3>计分与升级</h3><p>5 计 5 分，10、K 各计 10 分，只统计闲家得分。闲家赢末墩时底牌加倍：单张 ×2、对子 ×4、两连对 ×6，此后每多一对加 2；全单张甩牌 ×3，其他甩牌按最长组合计算。</p><table><thead><tr><th>闲家得分</th><th>结果</th></tr></thead><tbody><tr><td>0</td><td>庄家方升 3 级</td></tr><tr><td>5–35</td><td>庄家方升 2 级</td></tr><tr><td>40–75</td><td>庄家方升 1 级</td></tr><tr><td>80–115</td><td>闲家上庄，不升级</td></tr><tr><td>120 起，每多 40 分</td><td>闲家多升 1 级</td></tr></tbody></table><p>守庄成功换庄家对家坐庄，失庄换庄家下家。级别最多升至 A，A 必须坐庄打过。此版本不含炒底、钩到底与甩牌罚分等地方规则。</p><h3>与朋友同桌</h3><p>房主创建后复制邀请链接，朋友在开局前入座，也可点击空位换座。房主点击开局，空位自动交给 AI。掉线由 AI 接管；原浏览器刷新可恢复原座位。房主可在开局前或局间选择出牌时限：15、30、60、120 秒或不限时。扣底时限为出牌的 1.5 倍（向上取整）；默认出牌 60 秒、扣底 90 秒。限时模式超时由 AI 代行一次；不限时不会自动催促真人，AI、托管和断线接管仍正常运行。所有玩家离线时牌局暂停。</p><p class="muted">房间保存在服务器内存，重启会清空；离线 6 小时后回收。</p><a href="https://zh.wikipedia.org/zh-hans/升级_(扑克牌)" target="_blank" rel="noreferrer">规则参考：维基百科「升级」 ↗</a></div></dialog>
+  <dialog id="rules-dialog"><div class="dialog-header"><div><span class="eyebrow">桌规 / HOUSE RULES</span><h2>双副牌升级</h2></div><button class="quiet close-dialog" aria-label="关闭">✕</button></div><div class="rules-content"><p>四人对家组队，南北一队、东西一队。两副含大小王的扑克牌共 108 张；每人 25 张，留 8 张底牌。双方从 2 打起，坐庄打过 A 获胜。</p><h3>亮主与扣底</h3><p>本桌从庄家位置起按逆时针顺序摸牌，每 0.5 秒全桌摸一张，每人最终 25 张。摸牌期间，任何玩家都可用已经摸到的牌随时亮主或反主，无需等待轮次。强度：单张级牌 ＜ 同花色一对级牌 ＜ 一对小王 ＜ 一对大王；王对为无主。摸完后保留 60 秒亮主机会，庄家可点击「不改主」，其他玩家可点击「不亮」；全员确认则提前定主，否则等待倒计时结束。定主前不向庄家发放底牌。有人亮主或反主后重新计时，并清除之前的不亮确认。只可用同花色对子加固自己。首局最后亮主者坐庄；首局无人亮主重新摸牌，后续局无人亮主翻底定花色。庄家收取底牌并扣回任意 8 张。</p><h3>出牌与跟牌</h3><p>庄家先出，之后由上一墩赢家领出，按南→东→北→西的逆时针顺序。主牌包括主花色、所有级牌及大小王；无主时仅级牌与王为主牌。可出同门单张、对子、拖拉机或甩牌。对子必须花色点数完全相同。拖拉机是相邻等级的连续对子；跳过级牌后的普通牌仍相邻，不同副级牌等大，不能互连。</p><p>跟牌须同张数，先跟足领出花色。有拖拉机须跟；不足时按领出组合从长到短，优先最长可跟连对，再跟剩余对子，最后单张。缺门可垫牌；完全缺门且主牌组合匹配才能毙牌。等大的牌先出为大。</p><p>甩牌要求其余三家均无同门更大的相应组合。失败时自动出张数最少、再按大小最小的失败组合，本桌不罚分。成功甩牌只能被匹配组合的主牌毙；超毙比较最大组合。</p><h3>计分与升级</h3><p>5 计 5 分，10、K 各计 10 分，只统计闲家得分。闲家赢末墩时底牌加倍：单张 ×2、对子 ×4、两连对 ×6，此后每多一对加 2；全单张甩牌 ×3，其他甩牌按最长组合计算。</p><table><thead><tr><th>闲家得分</th><th>结果</th></tr></thead><tbody><tr><td>0</td><td>庄家方升 3 级</td></tr><tr><td>5–35</td><td>庄家方升 2 级</td></tr><tr><td>40–75</td><td>庄家方升 1 级</td></tr><tr><td>80–115</td><td>闲家上庄，不升级</td></tr><tr><td>120 起，每多 40 分</td><td>闲家多升 1 级</td></tr></tbody></table><p>守庄成功换庄家对家坐庄，失庄换庄家下家。级别最多升至 A，A 必须坐庄打过。此版本不含炒底、钩到底与甩牌罚分等地方规则。</p><h3>与朋友同桌</h3><p>房主创建后复制邀请链接，朋友在开局前入座，也可点击空位换座。房主点击开局，空位自动交给 AI。访客身份和昵称保存在本浏览器；可从大厅的未完成牌桌列表恢复原座位。任何真人离线都会暂停整桌，全部真人归队后继续；创建者可通过「管理玩家」移除其他玩家，由 AI 接管。房主可在开局前或局间选择出牌时限：15、30、60、120 秒或不限时。扣底时限为出牌的 1.5 倍（向上取整）；默认出牌 60 秒、扣底 90 秒。限时模式超时由 AI 代行一次；不限时不会自动催促真人，AI 与主动托管仍正常运行。暂停时摸牌和倒计时也会冻结。</p><p class="muted">牌桌自动存入 SQLite，重启服务后可继续；离线 6 小时只回收内存，存档保留。</p><a href="https://zh.wikipedia.org/zh-hans/升级_(扑克牌)" target="_blank" rel="noreferrer">规则参考：维基百科「升级」 ↗</a></div></dialog>
   <dialog id="result-dialog"><div class="dialog-header"><div><span class="eyebrow">本局结束</span><h2 id="result-title"></h2></div><button class="quiet close-dialog" aria-label="关闭">✕</button></div><div id="result-body"></div><div id="result-actions"></div></dialog>
   <dialog id="previous-dialog" aria-labelledby="previous-dialog-title"><div class="dialog-header"><h2 id="previous-dialog-title">上一墩</h2><button class="quiet close-dialog" aria-label="关闭上一墩">✕</button></div><div id="previous-detail" class="previous-detail"></div></dialog>
 </body>

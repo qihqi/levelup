@@ -279,7 +279,7 @@ def test_stale_version_wrong_seat_malformed_and_forged_cards(client):
         receive(host, "pong")
 
 
-def test_disconnect_reconnect_identity_and_host_transfer(client):
+def test_disconnect_reconnect_preserves_starter_and_pauses_table(client):
     info = create(client)
     room = server.rooms[info["room"]]
     with ExitStack() as stack:
@@ -288,11 +288,12 @@ def test_disconnect_reconnect_identity_and_host_transfer(client):
         version = state["version"]
         host.close()
         state = receive(guest, "state", version + 1)
-        assert state["host"] == 1
-        assert not state["players"][0]["connected"] and state["players"][0]["auto"]
+        assert state["host"] == 0 and state["paused"] and state["waiting_for"] == [0]
+        assert not state["players"][0]["connected"] and not state["players"][0]["auto"]
         restored, welcome2, state = connect(client, stack, info["room"], welcome["token"])
         assert welcome2["seat"] == 0
         assert state["players"][0]["connected"] and not state["players"][0]["auto"]
+        assert not state["paused"]
         assert len(room.players) == 2
 
 
@@ -326,7 +327,7 @@ def test_unknown_room_bad_token_and_join_after_start(client):
             assert "已经开始" in receive(newcomer, "error")["message"]
 
 
-def test_live_ai_takes_over_disconnected_turn(client, monkeypatch):
+def test_disconnected_turn_waits_for_rejoin_instead_of_ai_takeover(client, monkeypatch):
     info = create(client)
     with ExitStack() as stack:
         host, _, _ = connect(client, stack, info["room"], info["token"])
@@ -337,8 +338,10 @@ def test_live_ai_takes_over_disconnected_turn(client, monkeypatch):
         state = receive(host, "state", version)
         monkeypatch.setattr(server, "AI_DELAY", 0)
         host.close()
-        state = receive(guest, "state", version + 2)
-        assert state["turn"] == 1 and state["players"][0]["auto"]
+        state = receive(guest, "state", version + 1)
+        assert state["turn"] == 0 and state["paused"] and not state["players"][0]["auto"]
+        guest.send_json({"action": "hint", "version": state["version"]})
+        assert "暂停" in receive(guest, "error")["message"]
 
 
 def test_turn_timeout_takes_one_action_without_permanent_autoplay(client, monkeypatch):
